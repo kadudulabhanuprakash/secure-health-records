@@ -1,0 +1,6 @@
+Patient Name: John Doe
+Age: 45
+Blood Group: O+
+Diagnosis: Hypertension
+Prescription: Amlodipine 5mg daily
+Next Appointment: 2025-09-05

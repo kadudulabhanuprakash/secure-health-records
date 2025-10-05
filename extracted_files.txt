@@ -1,0 +1,3664 @@
+All Text Files Found:
+- .gitignore
+- azure_blob_demo.py
+- check.py
+- downloaded_patient.txt
+- downloaded_patient1.txt
+- export_files.py
+- extracted_files.txt
+- hardhat.config.js
+- main.py
+- main_local.py
+- output.txt
+- package-lock.json
+- package.json
+- PHASE1_FEATURES.md
+- README.md
+- register.json
+- test_backend.py
+- test_env.py
+- WARP.md
+- azure\app_service_settings.json
+- azure\blob_config.json
+- backend\app.py
+- backend\models.py
+- backend\requirements.txt
+- backend\run.py
+- backend\utils.py
+- backend\app\blockchain.py
+- backend\app\config.py
+- backend\app\models.py
+- backend\app\__init__.py
+- backend\app\routes\auth.py
+- backend\app\routes\blockchain_logger.py
+- backend\app\routes\blockchain_routes.py
+- backend\app\routes\medical_forms.py
+- backend\app\routes\records.py
+- backend\app\routes\register.json
+- backend\app\routes\storage_routes.py
+- backend\app\routes\storage_routes_local.py
+- backend\app\services\blockchain_service.py
+- backend\app\services\storage_service.py
+- blockchain\log_access.py
+- blockchain\README.md
+- blockchain\web3_config.py
+- blockchain\contract\abi.json
+- blockchain\contract\address.txt
+- contracts\AccessLogger.json
+- contracts\AccessLogger.sol
+- contracts\Lock.sol
+- frontend\dashboard.html
+- frontend\index.html
+- frontend\upload_record.html
+- frontend\view_record.html
+- frontend\css\style.css
+- frontend\react_app\.gitignore
+- frontend\react_app\package-lock.json
+- frontend\react_app\package.json
+- frontend\react_app\README.md
+- frontend\react_app\public\index.html
+- frontend\react_app\public\manifest.json
+- frontend\react_app\public\robots.txt
+- frontend\react_app\public\sw.js
+- frontend\react_app\src\App.css
+- frontend\react_app\src\App.js
+- frontend\react_app\src\App.test.js
+- frontend\react_app\src\index.css
+- frontend\react_app\src\index.js
+- frontend\react_app\src\reportWebVitals.js
+- frontend\react_app\src\setupTests.js
+- frontend\react_app\src\components\DoctorDashboard.js
+- frontend\react_app\src\components\Login.css
+- frontend\react_app\src\components\Login.js
+- frontend\react_app\src\components\MedicalFormReview.js
+- frontend\react_app\src\components\MedicalForms.js
+- frontend\react_app\src\components\Navbar.js
+- frontend\react_app\src\components\PatientDashboard.js
+- frontend\react_app\src\components\PrescriptionManagement.js
+- frontend\react_app\src\components\Register.js
+- ignition\modules\Lock.js
+- patients\sample_patient.txt
+- patients\sample_patient1.txt
+- patients\sample_patient2.txt
+- patients\sample_patient3.txt
+- scripts\deploy.js
+- test\Lock.js
+
+---
+
+File: .env
+Line 1: AZURE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=securehealthrecords123;AccountKey=bLEsr/0cpV63DBt233z9O6xJ1kSYZ5s34/QqrlM6V1i8EthFGxGmFL+mPz+7xZQQGd58aP+iuKin+AStWh6PMA==;EndpointSuffix=core.windows.net
+Line 2: AZURE_CONTAINER_NAME=patient-records
+Line 3: JWT_SECRET_KEY=5a9c6181891015d04fe747b7793ed16d8fed28483bed635d87f0ad6a0ff09c3e
+Line 4: ETHEREUM_PROVIDER_URL=http://127.0.0.1:8545
+Line 5: ACCESS_LOGGER_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+Line 6: WALLET_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+
+---
+
+File: azure_blob_demo.py
+Line 1: from azure.storage.blob import BlobServiceClient
+Line 2: import os
+Line 3: 
+Line 4: # 🔑 Use your connection string here
+Line 5: connection_string = "DefaultEndpointsProtocol=https;AccountName=securehealthrecords123;AccountKey=bLEsr/0cpV63DBt233z9O6xJ1kSYZ5s34/QqrlM6V1i8EthFGxGmFL+mPz+7xZQQGd58aP+iuKin+AStWh6PMA==;EndpointSuffix=core.windows.net"
+Line 6: container_name = "patient-records"
+Line 7: 
+Line 8: # Initialize Blob Service Client
+Line 9: blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+Line 10: container_client = blob_service_client.get_container_client(container_name)
+Line 11: 
+Line 12: # Function: Upload a file
+Line 13: def upload_file(local_file, blob_name):
+Line 14: with open(local_file, "rb") as data:
+Line 15: container_client.upload_blob(name=blob_name, data=data, overwrite=True)
+Line 16: print(f"✅ Uploaded '{local_file}' as blob '{blob_name}'")
+Line 17: 
+Line 18: # Function: List all blobs
+Line 19: def list_blobs():
+Line 20: print("\n📂 Files in container:")
+Line 21: for blob in container_client.list_blobs():
+Line 22: print(f"- {blob.name}")
+Line 23: 
+Line 24: # Function: Download a file
+Line 25: def download_file(blob_name, download_path):
+Line 26: with open(download_path, "wb") as file:
+Line 27: data = container_client.download_blob(blob_name)
+Line 28: file.write(data.readall())
+Line 29: print(f"✅ Downloaded blob '{blob_name}' to '{download_path}'")
+Line 30: 
+Line 31: # ----------------------------
+Line 32: # Demo usage
+Line 33: # ----------------------------
+Line 34: 
+Line 35: # 1. Upload all patient files from 'patients/' folder
+Line 36: folder = "patients"
+Line 37: for filename in os.listdir(folder):
+Line 38: filepath = os.path.join(folder, filename)
+Line 39: if os.path.isfile(filepath):
+Line 40: upload_file(filepath, filename)
+Line 41: 
+Line 42: # 2. List all blobs
+Line 43: list_blobs()
+Line 44: 
+Line 45: # 3. Download one blob as example
+Line 46: download_file("patient1.txt", "downloaded_patient1.txt")
+
+---
+
+File: check.py
+Line 1: import os
+Line 2: from pathlib import Path
+Line 3: 
+Line 4: def extract_files(root_dir, include_files=None, exclude_dirs=None, extensions=None):
+Line 5: root_dir = Path(root_dir)
+Line 6: if include_files is None:
+Line 7: include_files = [
+Line 8: 'main.py',
+Line 9: 'backend\\app\\__init__.py',
+Line 10: 'backend\\app\\models.py',
+Line 11: 'backend\\app\\routes\\auth.py',
+Line 12: 'backend\\app\\routes\\storage_routes.py',
+Line 13: 'backend\\app\\routes\\blockchain_routes.py',
+Line 14: 'backend\\app\\blockchain.py',
+Line 15: 'backend\\app\\services\\blockchain_service.py',
+Line 16: 'contracts\\AccessLogger.sol',
+Line 17: 'scripts\\deploy.js',
+Line 18: 'hardhat.config.js',
+Line 19: 'contracts\\AccessLogger.json',
+Line 20: 'frontend\\react_app\\src\\App.js',
+Line 21: 'frontend\\react_app\\src\\components\\Login.js',
+Line 22: 'frontend\\react_app\\src\\components\\Register.js',
+Line 23: 'frontend\\react_app\\src\\components\\PatientDashboard.js',
+Line 24: 'frontend\\react_app\\src\\components\\DoctorDashboard.js',
+Line 25: 'frontend\\react_app\\src\\components\\Navbar.js',
+Line 26: 'frontend\\react_app\\src\\index.js',  # Added for index.js
+Line 27: 'frontend\\react_app\\package.json',
+Line 28: '.env',
+Line 29: 'check.py',
+Line 30: 'test_env.py',
+Line 31: 'azure_blob_demo.py',
+Line 32: 'package.json',
+Line 33: 'patients\\sample_patient.txt',
+Line 34: 'patients\\sample_patient1.txt',
+Line 35: 'patients\\sample_patient2.txt',
+Line 36: 'patients\\sample_patient3.txt',
+Line 37: ]
+Line 38: if exclude_dirs is None:
+Line 39: exclude_dirs = ['.venv', 'node_modules', '__pycache__', 'artifacts', 'cache']
+Line 40: if extensions is None:
+Line 41: extensions = ['.py', '.js', '.json', '.sol', '.md', '.txt', '.html', '.css', '.gitignore']
+Line 42: 
+Line 43: output = []
+Line 44: found_files = set()
+Line 45: 
+Line 46: # Normalize include_files to use backslashes
+Line 47: normalized_include_files = [f.replace('/', '\\') for f in include_files]
+Line 48: 
+Line 49: # Log all text files
+Line 50: output.append("All Text Files Found:")
+Line 51: for root, dirs, files in os.walk(root_dir, topdown=True):
+Line 52: dirs[:] = [d for d in dirs if d not in exclude_dirs]
+Line 53: for file in files:
+Line 54: if any(file.endswith(ext) for ext in extensions):
+Line 55: file_path = Path(root) / file
+Line 56: relative_path = str(file_path.relative_to(root_dir)).replace('/', '\\')
+Line 57: output.append(f"- {relative_path}")
+Line 58: output.append("\n---\n")
+Line 59: 
+Line 60: # Extract contents of included files
+Line 61: for root, dirs, files in os.walk(root_dir, topdown=True):
+Line 62: dirs[:] = [d for d in dirs if d not in exclude_dirs]
+Line 63: for file in files:
+Line 64: file_path = Path(root) / file
+Line 65: relative_path = str(file_path.relative_to(root_dir)).replace('/', '\\')
+Line 66: if (relative_path in normalized_include_files or
+Line 67: relative_path.lower() in [f.lower() for f in normalized_include_files] or
+Line 68: file.lower() in [Path(f).name.lower() for f in normalized_include_files]):
+Line 69: output.append(f"File: {relative_path}")
+Line 70: found_files.add(relative_path)
+Line 71: try:
+Line 72: with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+Line 73: lines = f.readlines()
+Line 74: for line_num, line in enumerate(lines, start=1):
+Line 75: output.append(f"Line {line_num}: {line.strip()}")
+Line 76: output.append("\n---\n")
+Line 77: except Exception as e:
+Line 78: output.append(f"Error reading {relative_path}: {e}\n---\n")
+Line 79: if file == 'package-lock.json':
+Line 80: output.append(f"Skipped: {relative_path} (large generated file)\n---\n")
+Line 81: 
+Line 82: # Log missing files
+Line 83: missing_files = [f for f in normalized_include_files if f not in found_files]
+Line 84: if missing_files:
+Line 85: output.append("Missing Files:")
+Line 86: for f in missing_files:
+Line 87: output.append(f"- {f}")
+Line 88: output.append("\n---\n")
+Line 89: 
+Line 90: return '\n'.join(output)
+Line 91: 
+Line 92: if __name__ == "__main__":
+Line 93: root_dir = r'C:\secure-health-records'
+Line 94: extracted_content = extract_files(root_dir)
+Line 95: with open('extracted_files.txt', 'w', encoding='utf-8') as out_f:
+Line 96: out_f.write(extracted_content)
+Line 97: print("Extracted content saved to 'extracted_files.txt'")
+
+---
+
+File: hardhat.config.js
+Line 1: require("@nomicfoundation/hardhat-toolbox");
+Line 2: 
+Line 3: /** @type import('hardhat/config').HardhatUserConfig */
+Line 4: module.exports = {
+Line 5: solidity: {
+Line 6: compilers: [
+Line 7: {
+Line 8: version: "0.8.28",   // <-- explicitly set this version
+Line 9: settings: {
+Line 10: optimizer: {
+Line 11: enabled: true,
+Line 12: runs: 200
+Line 13: }
+Line 14: }
+Line 15: }
+Line 16: ]
+Line 17: },
+Line 18: networks: {
+Line 19: localhost: {
+Line 20: url: "http://127.0.0.1:8545"
+Line 21: }
+Line 22: }
+Line 23: };
+
+---
+
+File: main.py
+Line 1: # File: backend/main.py
+Line 2: import os
+Line 3: from dotenv import load_dotenv
+Line 4: from backend.app import create_app
+Line 5: 
+Line 6: env_path = r'C:\secure-health-records\.env'
+Line 7: try:
+Line 8: if os.path.exists(env_path):
+Line 9: print(f"main.py - Loading .env from: {env_path}")
+Line 10: with open(env_path, 'r', encoding='utf-8') as f:
+Line 11: for line in f:
+Line 12: if line.strip() and not line.startswith('#'):
+Line 13: try:
+Line 14: key, value = line.strip().split('=', 1)
+Line 15: os.environ[key] = value
+Line 16: print(f"main.py - Set {key}: {value[:10]}...")
+Line 17: except ValueError as e:
+Line 18: print(f"main.py - Error parsing line in .env: {line.strip()} - {e}")
+Line 19: print("main.py - Current working directory:", os.getcwd())
+Line 20: print("main.py - AZURE_STORAGE_CONNECTION_STRING:", os.getenv('AZURE_STORAGE_CONNECTION_STRING') or "None")
+Line 21: print("main.py - JWT_SECRET_KEY:", os.getenv('JWT_SECRET_KEY') or "None")
+Line 22: else:
+Line 23: raise FileNotFoundError(f"main.py - {env_path} not found")
+Line 24: except Exception as e:
+Line 25: raise RuntimeError(f"main.py - Failed to load .env: {e}")
+Line 26: 
+Line 27: # Create the Flask app using the new factory function
+Line 28: app = create_app()
+Line 29: 
+Line 30: if __name__ == '__main__':
+Line 31: app.run(debug=True, host='0.0.0.0', port=5000)
+
+---
+
+Skipped: package-lock.json (large generated file)
+---
+
+File: package.json
+Line 1: {
+Line 2: "name": "react_app",
+Line 3: "version": "0.1.0",
+Line 4: "private": true,
+Line 5: "dependencies": {
+Line 6: "@anthropic-ai/claude-code": "^2.0.5",
+Line 7: "@mui/material": "^5.15.15",
+Line 8: "axios": "^1.7.7",
+Line 9: "jwt-decode": "^4.0.0",
+Line 10: "react": "^18.2.0",
+Line 11: "react-dom": "^18.2.0",
+Line 12: "react-router-dom": "^6.26.1"
+Line 13: },
+Line 14: "devDependencies": {
+Line 15: "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+Line 16: "hardhat": "^2.26.2",
+Line 17: "react-scripts": "^0.0.0",
+Line 18: "solc": "^0.8.28"
+Line 19: },
+Line 20: "scripts": {
+Line 21: "start": "react-scripts start",
+Line 22: "build": "react-scripts build",
+Line 23: "test": "react-scripts test",
+Line 24: "eject": "react-scripts eject"
+Line 25: },
+Line 26: "eslintConfig": {
+Line 27: "extends": [
+Line 28: "react-app",
+Line 29: "react-app/jest"
+Line 30: ]
+Line 31: },
+Line 32: "browserslist": {
+Line 33: "production": [
+Line 34: ">0.2%",
+Line 35: "not dead",
+Line 36: "not op_mini all"
+Line 37: ],
+Line 38: "development": [
+Line 39: "last 1 chrome version",
+Line 40: "last 1 firefox version",
+Line 41: "last 1 safari version"
+Line 42: ]
+Line 43: },
+Line 44: "overrides": {
+Line 45: "@svgr/webpack": "^6.2.1"
+Line 46: },
+Line 47: "description": "This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.",
+Line 48: "main": "hardhat.config.js",
+Line 49: "directories": {
+Line 50: "test": "test"
+Line 51: },
+Line 52: "keywords": [],
+Line 53: "author": "",
+Line 54: "license": "ISC"
+Line 55: }
+
+---
+
+File: test_env.py
+Line 1: import os
+Line 2: env_path = r'C:\secure-health-records\.env'
+Line 3: print(f"Loading: {env_path}")
+Line 4: try:
+Line 5: if os.path.exists(env_path):
+Line 6: with open(env_path, 'r', encoding='utf-8') as f:
+Line 7: for line in f:
+Line 8: if line.strip() and not line.startswith('#'):
+Line 9: try:
+Line 10: key, value = line.strip().split('=', 1)
+Line 11: os.environ[key] = value
+Line 12: print(f"Set {key}: {value[:10]}...")
+Line 13: except ValueError as e:
+Line 14: print(f"Error parsing line: {line.strip()} - {e}")
+Line 15: print("✅ .env loaded successfully")
+Line 16: print(f"AZURE_STORAGE_CONNECTION_STRING = {os.getenv('AZURE_STORAGE_CONNECTION_STRING')}")
+Line 17: else:
+Line 18: print(f"❌ {env_path} not found")
+Line 19: except Exception as e:
+Line 20: print(f"❌ Error loading .env: {e}")
+
+---
+
+File: backend\models.py
+
+---
+
+File: backend\app\blockchain.py
+Line 1: # File: backend/app/blockchain.py
+Line 2: from web3 import Web3
+Line 3: import json
+Line 4: import os
+Line 5: 
+Line 6: # Connect to Ethereum node
+Line 7: w3 = Web3(Web3.HTTPProvider(os.getenv('ETHEREUM_PROVIDER_URL')))
+Line 8: if not w3.is_connected():
+Line 9: print("blockchain.py - Warning: Not connected to Ethereum node")
+Line 10: 
+Line 11: # Contract details from .env
+Line 12: contract_address = os.getenv('ACCESS_LOGGER_ADDRESS')
+Line 13: private_key = os.getenv('WALLET_PRIVATE_KEY')
+Line 14: 
+Line 15: # Load ABI from contracts/AccessLogger.json
+Line 16: abi_path = os.path.join(os.path.dirname(__file__), '../../contracts/AccessLogger.json')
+Line 17: with open(abi_path, 'r') as f:
+Line 18: abi = json.load(f)['abi']
+Line 19: 
+Line 20: # Contract instance
+Line 21: contract = w3.eth.contract(address=contract_address, abi=abi)
+Line 22: 
+Line 23: def log_access(user_email, record_name, action):
+Line 24: """Log access event to Ethereum blockchain."""
+Line 25: try:
+Line 26: account = w3.eth.account.from_key(private_key)
+Line 27: nonce = w3.eth.get_transaction_count(account.address)
+Line 28: 
+Line 29: txn = contract.functions.logAccess(user_email, record_name, action).build_transaction({
+Line 30: 'from': account.address,
+Line 31: 'nonce': nonce,
+Line 32: 'gas': 200000,
+Line 33: 'gasPrice': w3.to_wei('20', 'gwei')
+Line 34: })
+Line 35: 
+Line 36: signed_txn = w3.eth.account.sign_transaction(txn, private_key)
+Line 37: tx_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
+Line 38: receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+Line 39: 
+Line 40: print(f"blockchain.py - Access logged: Tx hash {tx_hash.hex()} for {user_email} on {record_name} ({action})")
+Line 41: return tx_hash.hex()
+Line 42: except Exception as e:
+Line 43: print(f"blockchain.py - Logging failed: {str(e)}")
+Line 44: return None
+
+---
+
+File: backend\app\models.py
+Line 1: # File: backend/app/models.py
+Line 2: from flask_sqlalchemy import SQLAlchemy
+Line 3: 
+Line 4: db = SQLAlchemy()
+Line 5: 
+Line 6: class User(db.Model):
+Line 7: id = db.Column(db.Integer, primary_key=True)
+Line 8: email = db.Column(db.String(120), unique=True, nullable=False)
+Line 9: password = db.Column(db.String(255), nullable=False)
+Line 10: role = db.Column(db.String(50), nullable=False)  # 'patient' or 'doctor'
+Line 11: 
+Line 12: class Record(db.Model):
+Line 13: id = db.Column(db.Integer, primary_key=True)
+Line 14: patient_id = db.Column(db.String(120), nullable=False)  # email of the patient
+Line 15: filename = db.Column(db.String(255), nullable=False)
+Line 16: blob_url = db.Column(db.String(255), nullable=False)
+Line 17: uploaded_at = db.Column(db.DateTime, nullable=False)
+Line 18: 
+Line 19: class AccessLog(db.Model):
+Line 20: id = db.Column(db.Integer, primary_key=True)
+Line 21: record_id = db.Column(db.Integer, db.ForeignKey('record.id'), nullable=False)
+Line 22: accessed_by = db.Column(db.String(120), nullable=False)  # email of user accessing
+Line 23: access_time = db.Column(db.DateTime, nullable=False)
+Line 24: 
+Line 25: class MedicalForm(db.Model):
+Line 26: id = db.Column(db.Integer, primary_key=True)
+Line 27: patient_email = db.Column(db.String(120), nullable=False)
+Line 28: form_type = db.Column(db.String(50), nullable=False)  # 'health_profile', 'symptoms', 'vitals', 'medications', 'family_history'
+Line 29: form_data = db.Column(db.Text, nullable=False)  # JSON string of form data
+Line 30: submitted_at = db.Column(db.DateTime, nullable=False)
+Line 31: doctor_email = db.Column(db.String(120), nullable=True)  # Doctor who reviewed it
+Line 32: status = db.Column(db.String(20), default='pending')  # 'pending', 'reviewed', 'approved'
+Line 33: 
+Line 34: class Prescription(db.Model):
+Line 35: id = db.Column(db.Integer, primary_key=True)
+Line 36: patient_email = db.Column(db.String(120), nullable=False)
+Line 37: doctor_email = db.Column(db.String(120), nullable=False)
+Line 38: medication_name = db.Column(db.String(200), nullable=False)
+Line 39: dosage = db.Column(db.String(100), nullable=False)
+Line 40: frequency = db.Column(db.String(100), nullable=False)
+Line 41: duration = db.Column(db.String(100), nullable=False)
+Line 42: instructions = db.Column(db.Text, nullable=True)
+Line 43: created_at = db.Column(db.DateTime, nullable=False)
+Line 44: status = db.Column(db.String(20), default='active')  # 'active', 'completed', 'cancelled'
+
+---
+
+File: backend\app\__init__.py
+Line 1: from flask import Flask
+Line 2: from flask_jwt_extended import JWTManager
+Line 3: from flask_bcrypt import Bcrypt
+Line 4: from flask_cors import CORS
+Line 5: from .models import db
+Line 6: import os
+Line 7: 
+Line 8: def create_app():
+Line 9: app = Flask(__name__)
+Line 10: 
+Line 11: # Load configuration
+Line 12: app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///users.db')
+Line 13: app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+Line 14: app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your-secret-key-change-in-production')
+Line 15: app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False  # Tokens don't expire for demo
+Line 16: 
+Line 17: # Initialize extensions
+Line 18: db.init_app(app)
+Line 19: jwt = JWTManager(app)
+Line 20: bcrypt = Bcrypt(app)
+Line 21: CORS(app, origins=['http://localhost:3000'], supports_credentials=True)
+Line 22: 
+Line 23: # Store bcrypt in app context for use in routes
+Line 24: app.bcrypt = bcrypt
+Line 25: 
+Line 26: # Register blueprints
+Line 27: from .routes.auth import auth_bp
+Line 28: from .routes.storage_routes_local import storage_bp
+Line 29: from .routes.blockchain_routes import blockchain_bp
+Line 30: from .routes.medical_forms import medical_forms_bp
+Line 31: 
+Line 32: app.register_blueprint(auth_bp)
+Line 33: app.register_blueprint(storage_bp, url_prefix='/api/storage')
+Line 34: app.register_blueprint(blockchain_bp, url_prefix='/api/blockchain')
+Line 35: app.register_blueprint(medical_forms_bp, url_prefix='/api/medical')
+Line 36: 
+Line 37: # Add root endpoints
+Line 38: @app.route('/')
+Line 39: def root():
+Line 40: return {"message": "Secure Health Records API is running", "status": "healthy"}, 200
+Line 41: 
+Line 42: @app.route('/health')
+Line 43: def health():
+Line 44: return {"status": "healthy", "message": "API is running"}, 200
+Line 45: 
+Line 46: # Create database tables
+Line 47: with app.app_context():
+Line 48: db.create_all()
+Line 49: 
+Line 50: return app
+
+---
+
+File: backend\app\routes\auth.py
+Line 1: # File: backend/app/routes/auth.py
+Line 2: from flask import Blueprint, jsonify, request, current_app
+Line 3: from flask_jwt_extended import create_access_token
+Line 4: from ..models import db, User
+Line 5: 
+Line 6: auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
+Line 7: 
+Line 8: @auth_bp.route('/register', methods=['POST'])
+Line 9: def register():
+Line 10: data = request.get_json()
+Line 11: email = data.get('email')
+Line 12: password = data.get('password')
+Line 13: role = data.get('role')
+Line 14: 
+Line 15: if not email or not password or role not in ['patient', 'doctor']:
+Line 16: return jsonify({"error": "Invalid input"}), 400
+Line 17: 
+Line 18: if User.query.filter_by(email=email).first():
+Line 19: return jsonify({"error": "User already exists"}), 400
+Line 20: 
+Line 21: hashed_password = current_app.bcrypt.generate_password_hash(password).decode('utf-8')
+Line 22: user = User(email=email, password=hashed_password, role=role)
+Line 23: db.session.add(user)
+Line 24: db.session.commit()
+Line 25: 
+Line 26: # Create JWT token with string identity
+Line 27: identity_str = f"{email}:{role}"
+Line 28: access_token = create_access_token(identity=identity_str)
+Line 29: return jsonify({"token": access_token, "message": "Registration successful"}), 200
+Line 30: 
+Line 31: @auth_bp.route('/login', methods=['POST'])
+Line 32: def login():
+Line 33: data = request.get_json()
+Line 34: email = data.get('email')
+Line 35: password = data.get('password')
+Line 36: 
+Line 37: if not email or not password:
+Line 38: return jsonify({"error": "Email and password are required"}), 400
+Line 39: 
+Line 40: user = User.query.filter_by(email=email).first()
+Line 41: if not user or not current_app.bcrypt.check_password_hash(user.password, password):
+Line 42: return jsonify({"error": "Invalid email or password"}), 401
+Line 43: 
+Line 44: # Create JWT token with string identity
+Line 45: identity_str = f"{user.email}:{user.role}"
+Line 46: access_token = create_access_token(identity=identity_str)
+Line 47: return jsonify({"token": access_token, "message": "Login successful"}), 200
+
+---
+
+File: backend\app\routes\blockchain_logger.py
+Line 1: from flask import Blueprint
+Line 2: 
+Line 3: blockchain_logger_bp = Blueprint('blockchain_logger', __name__)
+Line 4: 
+Line 5: @blockchain_logger_bp.route("/log_access", methods=["POST"])
+Line 6: def log_access():
+Line 7: return "Blockchain log endpoint works!"
+
+---
+
+File: backend\app\routes\blockchain_routes.py
+Line 1: # app/routes/blockchain_routes.py
+Line 2: from flask import Blueprint, request, jsonify
+Line 3: from backend.app.services.blockchain_service import log_access
+Line 4: 
+Line 5: blockchain_bp = Blueprint('blockchain', __name__, url_prefix='/blockchain')
+Line 6: 
+Line 7: @blockchain_bp.route('/log_access', methods=['POST'])
+Line 8: def log_access_endpoint():
+Line 9: """API endpoint to log a new access event to the blockchain."""
+Line 10: data = request.json
+Line 11: if not data:
+Line 12: return jsonify({"error": "Request body must be JSON"}), 400
+Line 13: 
+Line 14: required_fields = ['record_id', 'patient_id', 'accessor']
+Line 15: if not all(field in data for field in required_fields):
+Line 16: return jsonify({"error": "Missing required fields: 'record_id', 'patient_id', 'accessor'"}), 400
+Line 17: 
+Line 18: record_id = data.get('record_id')
+Line 19: patient_id = data.get('patient_id')
+Line 20: accessor = data.get('accessor')
+Line 21: 
+Line 22: try:
+Line 23: transaction_hash = log_access(record_id, patient_id, accessor)
+Line 24: return jsonify({
+Line 25: "message": "Access logged successfully",
+Line 26: "transaction_hash": transaction_hash
+Line 27: }), 200
+Line 28: except Exception as e:
+Line 29: return jsonify({"error": str(e)}), 500
+
+---
+
+File: backend\app\routes\medical_forms.py
+Line 1: from flask import Blueprint, request, jsonify
+Line 2: from flask_jwt_extended import jwt_required, get_jwt_identity
+Line 3: from flask_cors import cross_origin
+Line 4: from ..models import db, MedicalForm, Prescription
+Line 5: from datetime import datetime
+Line 6: import json
+Line 7: 
+Line 8: medical_forms_bp = Blueprint('medical_forms', __name__)
+Line 9: 
+Line 10: @medical_forms_bp.route('/forms', methods=['POST', 'OPTIONS'])
+Line 11: @cross_origin()
+Line 12: @jwt_required()
+Line 13: def submit_form():
+Line 14: """Submit a medical form"""
+Line 15: if request.method == 'OPTIONS':
+Line 16: return '', 200
+Line 17: 
+Line 18: try:
+Line 19: identity = get_jwt_identity()
+Line 20: email, role = identity.split(':')
+Line 21: 
+Line 22: if role.lower() != 'patient':
+Line 23: return jsonify({"error": "Only patients can submit medical forms"}), 403
+Line 24: 
+Line 25: data = request.get_json()
+Line 26: form_type = data.get('form_type')
+Line 27: form_data = data.get('form_data')
+Line 28: 
+Line 29: if not form_type or not form_data:
+Line 30: return jsonify({"error": "form_type and form_data are required"}), 400
+Line 31: 
+Line 32: valid_types = ['health_profile', 'symptoms', 'vitals', 'medications', 'family_history']
+Line 33: if form_type not in valid_types:
+Line 34: return jsonify({"error": f"Invalid form_type. Must be one of: {valid_types}"}), 400
+Line 35: 
+Line 36: # Create new medical form
+Line 37: medical_form = MedicalForm(
+Line 38: patient_email=email,
+Line 39: form_type=form_type,
+Line 40: form_data=json.dumps(form_data),
+Line 41: submitted_at=datetime.utcnow(),
+Line 42: status='pending'
+Line 43: )
+Line 44: 
+Line 45: db.session.add(medical_form)
+Line 46: db.session.commit()
+Line 47: 
+Line 48: return jsonify({
+Line 49: "message": "Form submitted successfully",
+Line 50: "form_id": medical_form.id,
+Line 51: "status": medical_form.status
+Line 52: }), 201
+Line 53: 
+Line 54: except Exception as e:
+Line 55: db.session.rollback()
+Line 56: return jsonify({"error": f"Failed to submit form: {str(e)}"}), 500
+Line 57: 
+Line 58: @medical_forms_bp.route('/forms', methods=['GET', 'OPTIONS'])
+Line 59: @cross_origin()
+Line 60: @jwt_required()
+Line 61: def get_forms():
+Line 62: """Get medical forms for the current user"""
+Line 63: if request.method == 'OPTIONS':
+Line 64: return '', 200
+Line 65: 
+Line 66: try:
+Line 67: identity = get_jwt_identity()
+Line 68: email, role = identity.split(':')
+Line 69: 
+Line 70: if role.lower() == 'patient':
+Line 71: # Patients can see their own forms
+Line 72: forms = MedicalForm.query.filter_by(patient_email=email).order_by(MedicalForm.submitted_at.desc()).all()
+Line 73: elif role.lower() == 'doctor':
+Line 74: # Doctors can see all pending forms and forms they've reviewed
+Line 75: forms = MedicalForm.query.filter(
+Line 76: (MedicalForm.status == 'pending') | (MedicalForm.doctor_email == email)
+Line 77: ).order_by(MedicalForm.submitted_at.desc()).all()
+Line 78: else:
+Line 79: return jsonify({"error": "Invalid role"}), 403
+Line 80: 
+Line 81: forms_data = []
+Line 82: for form in forms:
+Line 83: forms_data.append({
+Line 84: "id": form.id,
+Line 85: "patient_email": form.patient_email,
+Line 86: "form_type": form.form_type,
+Line 87: "form_data": json.loads(form.form_data),
+Line 88: "submitted_at": form.submitted_at.isoformat(),
+Line 89: "doctor_email": form.doctor_email,
+Line 90: "status": form.status
+Line 91: })
+Line 92: 
+Line 93: return jsonify({"forms": forms_data}), 200
+Line 94: 
+Line 95: except Exception as e:
+Line 96: return jsonify({"error": f"Failed to get forms: {str(e)}"}), 500
+Line 97: 
+Line 98: @medical_forms_bp.route('/forms/<int:form_id>/review', methods=['POST', 'OPTIONS'])
+Line 99: @cross_origin()
+Line 100: @jwt_required()
+Line 101: def review_form():
+Line 102: """Doctor reviews a medical form"""
+Line 103: if request.method == 'OPTIONS':
+Line 104: return '', 200
+Line 105: 
+Line 106: try:
+Line 107: identity = get_jwt_identity()
+Line 108: email, role = identity.split(':')
+Line 109: 
+Line 110: if role.lower() != 'doctor':
+Line 111: return jsonify({"error": "Only doctors can review forms"}), 403
+Line 112: 
+Line 113: form_id = request.view_args['form_id']
+Line 114: data = request.get_json()
+Line 115: status = data.get('status', 'reviewed')
+Line 116: 
+Line 117: if status not in ['reviewed', 'approved']:
+Line 118: return jsonify({"error": "Status must be 'reviewed' or 'approved'"}), 400
+Line 119: 
+Line 120: form = MedicalForm.query.get(form_id)
+Line 121: if not form:
+Line 122: return jsonify({"error": "Form not found"}), 404
+Line 123: 
+Line 124: form.doctor_email = email
+Line 125: form.status = status
+Line 126: db.session.commit()
+Line 127: 
+Line 128: return jsonify({
+Line 129: "message": f"Form {status} successfully",
+Line 130: "form_id": form.id,
+Line 131: "status": form.status
+Line 132: }), 200
+Line 133: 
+Line 134: except Exception as e:
+Line 135: db.session.rollback()
+Line 136: return jsonify({"error": f"Failed to review form: {str(e)}"}), 500
+Line 137: 
+Line 138: @medical_forms_bp.route('/prescriptions', methods=['POST', 'OPTIONS'])
+Line 139: @cross_origin()
+Line 140: @jwt_required()
+Line 141: def create_prescription():
+Line 142: """Doctor creates a prescription"""
+Line 143: if request.method == 'OPTIONS':
+Line 144: return '', 200
+Line 145: 
+Line 146: try:
+Line 147: identity = get_jwt_identity()
+Line 148: email, role = identity.split(':')
+Line 149: 
+Line 150: if role.lower() != 'doctor':
+Line 151: return jsonify({"error": "Only doctors can create prescriptions"}), 403
+Line 152: 
+Line 153: data = request.get_json()
+Line 154: patient_email = data.get('patient_email')
+Line 155: medication_name = data.get('medication_name')
+Line 156: dosage = data.get('dosage')
+Line 157: frequency = data.get('frequency')
+Line 158: duration = data.get('duration')
+Line 159: instructions = data.get('instructions', '')
+Line 160: 
+Line 161: if not all([patient_email, medication_name, dosage, frequency, duration]):
+Line 162: return jsonify({"error": "Missing required fields"}), 400
+Line 163: 
+Line 164: prescription = Prescription(
+Line 165: patient_email=patient_email,
+Line 166: doctor_email=email,
+Line 167: medication_name=medication_name,
+Line 168: dosage=dosage,
+Line 169: frequency=frequency,
+Line 170: duration=duration,
+Line 171: instructions=instructions,
+Line 172: created_at=datetime.utcnow(),
+Line 173: status='active'
+Line 174: )
+Line 175: 
+Line 176: db.session.add(prescription)
+Line 177: db.session.commit()
+Line 178: 
+Line 179: return jsonify({
+Line 180: "message": "Prescription created successfully",
+Line 181: "prescription_id": prescription.id
+Line 182: }), 201
+Line 183: 
+Line 184: except Exception as e:
+Line 185: db.session.rollback()
+Line 186: return jsonify({"error": f"Failed to create prescription: {str(e)}"}), 500
+Line 187: 
+Line 188: @medical_forms_bp.route('/prescriptions', methods=['GET', 'OPTIONS'])
+Line 189: @cross_origin()
+Line 190: @jwt_required()
+Line 191: def get_prescriptions():
+Line 192: """Get prescriptions for the current user"""
+Line 193: if request.method == 'OPTIONS':
+Line 194: return '', 200
+Line 195: 
+Line 196: try:
+Line 197: identity = get_jwt_identity()
+Line 198: email, role = identity.split(':')
+Line 199: 
+Line 200: if role.lower() == 'patient':
+Line 201: prescriptions = Prescription.query.filter_by(patient_email=email).order_by(Prescription.created_at.desc()).all()
+Line 202: elif role.lower() == 'doctor':
+Line 203: prescriptions = Prescription.query.filter_by(doctor_email=email).order_by(Prescription.created_at.desc()).all()
+Line 204: else:
+Line 205: return jsonify({"error": "Invalid role"}), 403
+Line 206: 
+Line 207: prescriptions_data = []
+Line 208: for prescription in prescriptions:
+Line 209: prescriptions_data.append({
+Line 210: "id": prescription.id,
+Line 211: "patient_email": prescription.patient_email,
+Line 212: "doctor_email": prescription.doctor_email,
+Line 213: "medication_name": prescription.medication_name,
+Line 214: "dosage": prescription.dosage,
+Line 215: "frequency": prescription.frequency,
+Line 216: "duration": prescription.duration,
+Line 217: "instructions": prescription.instructions,
+Line 218: "created_at": prescription.created_at.isoformat(),
+Line 219: "status": prescription.status
+Line 220: })
+Line 221: 
+Line 222: return jsonify({"prescriptions": prescriptions_data}), 200
+Line 223: 
+Line 224: except Exception as e:
+Line 225: return jsonify({"error": f"Failed to get prescriptions: {str(e)}"}), 500
+Line 226: 
+Line 227: @medical_forms_bp.route('/prescriptions/<int:prescription_id>/status', methods=['PUT', 'OPTIONS'])
+Line 228: @cross_origin()
+Line 229: @jwt_required()
+Line 230: def update_prescription_status():
+Line 231: """Update prescription status"""
+Line 232: if request.method == 'OPTIONS':
+Line 233: return '', 200
+Line 234: 
+Line 235: try:
+Line 236: identity = get_jwt_identity()
+Line 237: email, role = identity.split(':')
+Line 238: 
+Line 239: prescription_id = request.view_args['prescription_id']
+Line 240: data = request.get_json()
+Line 241: status = data.get('status')
+Line 242: 
+Line 243: if status not in ['active', 'completed', 'cancelled']:
+Line 244: return jsonify({"error": "Invalid status"}), 400
+Line 245: 
+Line 246: prescription = Prescription.query.get(prescription_id)
+Line 247: if not prescription:
+Line 248: return jsonify({"error": "Prescription not found"}), 404
+Line 249: 
+Line 250: # Check permissions
+Line 251: if role.lower() == 'patient' and prescription.patient_email != email:
+Line 252: return jsonify({"error": "Unauthorized"}), 403
+Line 253: elif role.lower() == 'doctor' and prescription.doctor_email != email:
+Line 254: return jsonify({"error": "Unauthorized"}), 403
+Line 255: 
+Line 256: prescription.status = status
+Line 257: db.session.commit()
+Line 258: 
+Line 259: return jsonify({
+Line 260: "message": "Prescription status updated successfully",
+Line 261: "prescription_id": prescription.id,
+Line 262: "status": prescription.status
+Line 263: }), 200
+Line 264: 
+Line 265: except Exception as e:
+Line 266: db.session.rollback()
+Line 267: return jsonify({"error": f"Failed to update prescription: {str(e)}"}), 500
+
+---
+
+File: backend\app\routes\storage_routes.py
+Line 1: # File: backend/app/routes/storage_routes.py
+Line 2: from flask import Blueprint, request, send_file, jsonify
+Line 3: from flask_jwt_extended import jwt_required, get_jwt_identity
+Line 4: from azure.storage.blob import BlobServiceClient
+Line 5: from werkzeug.utils import secure_filename
+Line 6: from io import BytesIO
+Line 7: from datetime import datetime
+Line 8: from backend.app.models import db, Record, AccessLog
+Line 9: from backend.app.blockchain import log_access
+Line 10: import os
+Line 11: 
+Line 12: storage_bp = Blueprint('storage', __name__)
+Line 13: 
+Line 14: # Global variables initialized later
+Line 15: blob_service_client = None
+Line 16: container_client = None
+Line 17: container_name = "patient-records"
+Line 18: 
+Line 19: def init_storage():
+Line 20: """Initialize Azure Blob Storage connection after .env is loaded."""
+Line 21: global blob_service_client, container_client
+Line 22: if blob_service_client is not None:
+Line 23: return  # Already initialized
+Line 24: 
+Line 25: connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+Line 26: if not connection_string:
+Line 27: raise ValueError("storage_routes.py - AZURE_STORAGE_CONNECTION_STRING is not set in .env file")
+Line 28: blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+Line 29: container_client = blob_service_client.get_container_client(container_name)
+Line 30: 
+Line 31: # Ensure container exists
+Line 32: try:
+Line 33: container_client.create_container()
+Line 34: print("storage_routes.py - Container created:", container_name)
+Line 35: except Exception as e:
+Line 36: print("storage_routes.py - Container creation skipped:", str(e))
+Line 37: 
+Line 38: # Allowed file extensions
+Line 39: ALLOWED_EXTENSIONS = {'pdf', 'docx', 'txt'}
+Line 40: 
+Line 41: def allowed_file(filename):
+Line 42: return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+Line 43: 
+Line 44: def parse_identity(identity_str):
+Line 45: """Parse string identity to dict."""
+Line 46: email, role = identity_str.split(':')
+Line 47: return {'email': email, 'role': role}
+Line 48: 
+Line 49: @storage_bp.route('/upload', methods=['POST'])
+Line 50: @jwt_required()
+Line 51: def upload_file():
+Line 52: init_storage()  # Ensure initialized
+Line 53: 
+Line 54: identity_str = get_jwt_identity()  # String like "email:role"
+Line 55: current_user = parse_identity(identity_str)
+Line 56: print(f"storage_routes.py - upload_file: Current user: {current_user}")
+Line 57: file = request.files.get('file')
+Line 58: patient_email = request.form.get('patientEmail', current_user['email'])
+Line 59: 
+Line 60: if not file:
+Line 61: return jsonify({"error": "No file provided"}), 422
+Line 62: if file.filename == '':
+Line 63: return jsonify({"error": "No file selected"}), 422
+Line 64: if not allowed_file(file.filename):
+Line 65: return jsonify({"error": "File type not allowed. Allowed: pdf, docx, txt"}), 422
+Line 66: 
+Line 67: filename = secure_filename(file.filename)
+Line 68: blob_name = f"{patient_email}/{filename}"
+Line 69: print(f"storage_routes.py - upload_file: Uploading {blob_name} for {patient_email}")
+Line 70: 
+Line 71: try:
+Line 72: blob_client = container_client.get_blob_client(blob_name)
+Line 73: blob_client.upload_blob(file, overwrite=True)
+Line 74: record = Record(
+Line 75: patient_id=patient_email,
+Line 76: filename=blob_name,
+Line 77: blob_url=f"https://{blob_service_client.account_name}.blob.core.windows.net/{container_name}/{blob_name}",
+Line 78: uploaded_at=datetime.utcnow()
+Line 79: )
+Line 80: db.session.add(record)
+Line 81: db.session.commit()
+Line 82: log_access(current_user['email'], blob_name, 'upload')
+Line 83: return jsonify({
+Line 84: "message": "File uploaded successfully",
+Line 85: "record_id": record.id,
+Line 86: "filename": blob_name,
+Line 87: "patient_id": patient_email
+Line 88: }), 200
+Line 89: except Exception as e:
+Line 90: db.session.rollback()
+Line 91: return jsonify({"error": f"Upload failed: {str(e)}"}), 500
+Line 92: 
+Line 93: @storage_bp.route('/list', methods=['GET'])
+Line 94: @jwt_required()
+Line 95: def list_files():
+Line 96: # No blob client needed for list (DB only), but initialize for consistency
+Line 97: init_storage()
+Line 98: 
+Line 99: identity_str = get_jwt_identity()  # String like "email:role"
+Line 100: current_user = parse_identity(identity_str)
+Line 101: print(f"storage_routes.py - list_files: Current user: {current_user}")
+Line 102: patient_email = request.args.get('patient', current_user['email'])
+Line 103: 
+Line 104: try:
+Line 105: records = Record.query.filter_by(patient_id=patient_email).all()
+Line 106: if current_user['role'] == 'doctor' and patient_email != current_user['email']:
+Line 107: log_access(current_user['email'], patient_email, 'list')
+Line 108: return jsonify({
+Line 109: "files": [
+Line 110: {
+Line 111: "id": r.id,
+Line 112: "patient_id": r.patient_id,
+Line 113: "filename": r.filename,
+Line 114: "upload_time": r.uploaded_at.isoformat()
+Line 115: } for r in records
+Line 116: ]
+Line 117: }), 200
+Line 118: except Exception as e:
+Line 119: return jsonify({"error": f"Failed to fetch records: {str(e)}"}), 500
+Line 120: 
+Line 121: @storage_bp.route('/download/<path:filename>', methods=['GET'])
+Line 122: @jwt_required()
+Line 123: def download_file(filename):
+Line 124: init_storage()
+Line 125: 
+Line 126: identity_str = get_jwt_identity()  # String like "email:role"
+Line 127: current_user = parse_identity(identity_str)
+Line 128: try:
+Line 129: record = Record.query.filter_by(filename=filename).first()
+Line 130: if not record:
+Line 131: return jsonify({"error": "Record not found"}), 404
+Line 132: log = AccessLog(record_id=record.id, accessed_by=current_user['email'], access_time=datetime.utcnow())
+Line 133: db.session.add(log)
+Line 134: db.session.commit()
+Line 135: if current_user['role'] == 'doctor' or not filename.startswith(current_user['email'] + '/'):
+Line 136: log_access(current_user['email'], filename, 'download')
+Line 137: blob_client = container_client.get_blob_client(filename)
+Line 138: blob_data = blob_client.download_blob().readall()
+Line 139: return send_file(
+Line 140: BytesIO(blob_data),
+Line 141: download_name=filename.split('/')[-1],
+Line 142: as_attachment=True
+Line 143: )
+Line 144: except Exception as e:
+Line 145: return jsonify({"error": f"Download failed: {str(e)}"}), 500
+Line 146: 
+Line 147: @storage_bp.route('/preview/<path:filename>', methods=['GET'])
+Line 148: @jwt_required()
+Line 149: def preview_file(filename):
+Line 150: init_storage()
+Line 151: 
+Line 152: identity_str = get_jwt_identity()  # String like "email:role"
+Line 153: current_user = parse_identity(identity_str)
+Line 154: try:
+Line 155: record = Record.query.filter_by(filename=filename).first()
+Line 156: if not record:
+Line 157: return jsonify({"error": "Record not found"}), 404
+Line 158: log = AccessLog(record_id=record.id, accessed_by=current_user['email'], access_time=datetime.utcnow())
+Line 159: db.session.add(log)
+Line 160: db.session.commit()
+Line 161: if current_user['role'] == 'doctor' or not filename.startswith(current_user['email'] + '/'):
+Line 162: log_access(current_user['email'], filename, 'preview')
+Line 163: blob_client = container_client.get_blob_client(filename)
+Line 164: blob_data = blob_client.download_blob().readall().decode('utf-8')
+Line 165: return jsonify({"content": blob_data}), 200
+Line 166: except Exception as e:
+Line 167: return jsonify({"error": f"Preview failed: {str(e)}"}), 500
+Line 168: 
+Line 169: @storage_bp.route('/access-logs/<patient_id>', methods=['GET'])
+Line 170: @jwt_required()
+Line 171: def access_logs(patient_id):
+Line 172: init_storage()
+Line 173: 
+Line 174: identity_str = get_jwt_identity()  # String like "email:role"
+Line 175: current_user = parse_identity(identity_str)
+Line 176: try:
+Line 177: records = Record.query.filter_by(patient_id=patient_id).all()
+Line 178: if not records:
+Line 179: return jsonify({"message": "No records found for this patient"}), 404
+Line 180: logs = AccessLog.query.filter(AccessLog.record_id.in_([r.id for r in records])).all()
+Line 181: if current_user['role'] == 'doctor' and patient_id != current_user['email']:
+Line 182: log_access(current_user['email'], patient_id, 'access_logs')
+Line 183: return jsonify([
+Line 184: {
+Line 185: "record_id": log.record_id,
+Line 186: "accessed_by": log.accessed_by,
+Line 187: "access_time": log.access_time.isoformat()
+Line 188: } for log in logs
+Line 189: ]), 200
+Line 190: except Exception as e:
+Line 191: return jsonify({"error": f"Failed to fetch access logs: {str(e)}"}), 500
+Line 192: 
+Line 193: @storage_bp.route('/records', methods=['GET'])
+Line 194: def list_all_records():
+Line 195: try:
+Line 196: records = Record.query.all()
+Line 197: return jsonify({
+Line 198: "files": [
+Line 199: {
+Line 200: "id": r.id,
+Line 201: "patient_id": r.patient_id,
+Line 202: "filename": r.filename,
+Line 203: "upload_time": r.uploaded_at.isoformat()
+Line 204: } for r in records
+Line 205: ]
+Line 206: }), 200
+Line 207: except Exception as e:
+Line 208: return jsonify({"error": f"Failed to fetch records: {str(e)}"}), 500
+
+---
+
+File: backend\app\services\blockchain_service.py
+Line 1: # app/services/blockchain_service.py
+Line 2: from web3 import Web3
+Line 3: import os
+Line 4: 
+Line 5: # Ethereum configuration
+Line 6: WEB3_PROVIDER = "http://127.0.0.1:8545"
+Line 7: CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"  # Your deployed address
+Line 8: ACCOUNT_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"  # Hardhat's first account
+Line 9: PRIVATE_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"  # Hardhat's first private key
+Line 10: 
+Line 11: # Contract ABI (updated to match new AccessLogger.sol)
+Line 12: CONTRACT_ABI = [
+Line 13: {
+Line 14: "anonymous": False,
+Line 15: "inputs": [
+Line 16: {"indexed": False, "internalType": "uint256", "name": "recordId", "type": "uint256"},
+Line 17: {"indexed": False, "internalType": "uint256", "name": "patientId", "type": "uint256"},
+Line 18: {"indexed": False, "internalType": "string", "name": "accessor", "type": "string"},
+Line 19: {"indexed": False, "internalType": "uint256", "name": "timestamp", "type": "uint256"}
+Line 20: ],
+Line 21: "name": "AccessLogged",
+Line 22: "type": "event"
+Line 23: },
+Line 24: {
+Line 25: "inputs": [
+Line 26: {"internalType": "uint256", "name": "recordId", "type": "uint256"},
+Line 27: {"internalType": "uint256", "name": "patientId", "type": "uint256"},
+Line 28: {"internalType": "string", "name": "accessor", "type": "string"}
+Line 29: ],
+Line 30: "name": "logAccess",
+Line 31: "outputs": [],
+Line 32: "stateMutability": "nonpayable",
+Line 33: "type": "function"
+Line 34: }
+Line 35: ]
+Line 36: 
+Line 37: # Initialize Web3
+Line 38: w3 = Web3(Web3.HTTPProvider(WEB3_PROVIDER))
+Line 39: checksum_address = w3.to_checksum_address(CONTRACT_ADDRESS)
+Line 40: contract = w3.eth.contract(address=checksum_address, abi=CONTRACT_ABI)
+Line 41: 
+Line 42: def log_access(record_id, patient_id, accessor):
+Line 43: """
+Line 44: Log an access event to the blockchain.
+Line 45: Returns the transaction hash.
+Line 46: """
+Line 47: try:
+Line 48: nonce = w3.eth.get_transaction_count(ACCOUNT_ADDRESS)
+Line 49: tx = contract.functions.logAccess(int(record_id), int(patient_id), accessor).build_transaction({
+Line 50: 'from': ACCOUNT_ADDRESS,
+Line 51: 'nonce': nonce,
+Line 52: 'gas': 200000,
+Line 53: 'gasPrice': w3.to_wei('20', 'gwei')
+Line 54: })
+Line 55: signed_tx = w3.eth.account.sign_transaction(tx, private_key=PRIVATE_KEY)
+Line 56: tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+Line 57: w3.eth.wait_for_transaction_receipt(tx_hash)
+Line 58: return w3.to_hex(tx_hash)
+Line 59: except Exception as e:
+Line 60: raise Exception(f"Failed to log access: {str(e)}")
+Line 61: 
+Line 62: 
+Line 63: def store_file_hash(filename, file_hash):
+Line 64: """
+Line 65: Store a file hash on the blockchain.
+Line 66: Returns the transaction hash.
+Line 67: """
+Line 68: try:
+Line 69: nonce = w3.eth.get_transaction_count(ACCOUNT_ADDRESS)
+Line 70: tx = contract.functions.storeFileHash(filename, file_hash).build_transaction({
+Line 71: 'from': ACCOUNT_ADDRESS,
+Line 72: 'nonce': nonce,
+Line 73: 'gas': 200000,
+Line 74: 'gasPrice': w3.to_wei('20', 'gwei')
+Line 75: })
+Line 76: signed_tx = w3.eth.account.sign_transaction(tx, private_key=PRIVATE_KEY)
+Line 77: tx_hash = w3.eth.send_raw_transaction(signed_tx.raw_transaction)
+Line 78: w3.eth.wait_for_transaction_receipt(tx_hash)
+Line 79: return w3.to_hex(tx_hash)
+Line 80: except Exception as e:
+Line 81: raise Exception(f"Failed to store hash: {str(e)}")
+Line 82: 
+Line 83: def get_file_hash(filename):
+Line 84: """
+Line 85: Retrieve a file hash from the blockchain.
+Line 86: """
+Line 87: try:
+Line 88: file_hash = contract.functions.getFileHash(filename).call()
+Line 89: return w3.to_hex(file_hash)
+Line 90: except Exception as e:
+Line 91: raise Exception(f"Failed to retrieve hash: {str(e)}")
+Line 92: 
+Line 93: def get_access_logs(record_id):
+Line 94: """
+Line 95: Retrieve access logs for a record from the blockchain.
+Line 96: """
+Line 97: try:
+Line 98: logs = contract.functions.getAccessLogs(record_id).call()
+Line 99: return [
+Line 100: {"patientId": log[0], "accessor": log[1], "timestamp": log[2]}
+Line 101: for log in logs
+Line 102: ]
+Line 103: except Exception as e:
+Line 104: raise Exception(f"Failed to retrieve access logs: {str(e)}")
+
+---
+
+File: contracts\AccessLogger.json
+Line 1: {
+Line 2: "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+Line 3: "abi": "[{\"type\":\"event\",\"anonymous\":false,\"name\":\"AccessLogged\",\"inputs\":[{\"type\":\"address\",\"name\":\"accessor\",\"indexed\":true},{\"type\":\"string\",\"name\":\"userEmail\",\"indexed\":false},{\"type\":\"string\",\"name\":\"recordName\",\"indexed\":false},{\"type\":\"string\",\"name\":\"action\",\"indexed\":false},{\"type\":\"uint256\",\"name\":\"timestamp\",\"indexed\":false}]},{\"type\":\"function\",\"name\":\"logAccess\",\"constant\":false,\"payable\":false,\"inputs\":[{\"type\":\"string\",\"name\":\"userEmail\"},{\"type\":\"string\",\"name\":\"recordName\"},{\"type\":\"string\",\"name\":\"action\"}],\"outputs\":[]}]"
+Line 4: }
+
+---
+
+File: contracts\AccessLogger.sol
+Line 1: // File: contracts/AccessLogger.sol
+Line 2: // SPDX-License-Identifier: MIT
+Line 3: pragma solidity ^0.8.0;
+Line 4: 
+Line 5: contract AccessLogger {
+Line 6: event AccessLogged(
+Line 7: address indexed accessor,
+Line 8: string userEmail,
+Line 9: string recordName,
+Line 10: string action,
+Line 11: uint256 timestamp
+Line 12: );
+Line 13: 
+Line 14: function logAccess(
+Line 15: string memory userEmail,
+Line 16: string memory recordName,
+Line 17: string memory action
+Line 18: ) public {
+Line 19: emit AccessLogged(
+Line 20: msg.sender,
+Line 21: userEmail,
+Line 22: recordName,
+Line 23: action,
+Line 24: block.timestamp
+Line 25: );
+Line 26: }
+Line 27: }
+
+---
+
+Skipped: frontend\react_app\package-lock.json (large generated file)
+---
+
+File: frontend\react_app\package.json
+Line 1: {
+Line 2: "name": "react_app",
+Line 3: "version": "0.1.0",
+Line 4: "private": true,
+Line 5: "dependencies": {
+Line 6: "@emotion/react": "^11.11.3",
+Line 7: "@emotion/styled": "^11.11.0",
+Line 8: "@mui/icons-material": "^5.18.0",
+Line 9: "@mui/material": "^5.15.5",
+Line 10: "@testing-library/jest-dom": "^5.17.0",
+Line 11: "@testing-library/react": "^13.4.0",
+Line 12: "@testing-library/user-event": "^13.5.0",
+Line 13: "axios": "^1.6.7",
+Line 14: "jwt-decode": "^3.1.2",
+Line 15: "react": "^18.3.1",
+Line 16: "react-dom": "^18.3.1",
+Line 17: "react-router-dom": "^6.21.3",
+Line 18: "react-scripts": "5.0.1",
+Line 19: "web-vitals": "^2.1.4"
+Line 20: },
+Line 21: "scripts": {
+Line 22: "start": "react-scripts start",
+Line 23: "build": "react-scripts build",
+Line 24: "test": "react-scripts test",
+Line 25: "eject": "react-scripts eject"
+Line 26: },
+Line 27: "eslintConfig": {
+Line 28: "extends": [
+Line 29: "react-app",
+Line 30: "react-app/jest"
+Line 31: ]
+Line 32: },
+Line 33: "browserslist": {
+Line 34: "production": [
+Line 35: ">0.2%",
+Line 36: "not dead",
+Line 37: "not op_mini all"
+Line 38: ],
+Line 39: "development": [
+Line 40: "last 1 chrome version",
+Line 41: "last 1 firefox version",
+Line 42: "last 1 safari version"
+Line 43: ]
+Line 44: }
+Line 45: }
+
+---
+
+File: frontend\react_app\src\App.js
+Line 1: // File: frontend/react_app/src/App.js
+Line 2: import React, { useState, useEffect } from 'react';
+Line 3: import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+Line 4: import jwtDecode from 'jwt-decode';
+Line 5: import { ThemeProvider, createTheme } from '@mui/material/styles';
+Line 6: import CssBaseline from '@mui/material/CssBaseline';
+Line 7: import Navbar from './components/Navbar';
+Line 8: import Login from './components/Login';
+Line 9: import Register from './components/Register';
+Line 10: import PatientDashboard from './components/PatientDashboard';
+Line 11: import DoctorDashboard from './components/DoctorDashboard';
+Line 12: import './App.css';
+Line 13: 
+Line 14: const theme = createTheme({
+Line 15: palette: {
+Line 16: primary: { main: '#1976d2' },
+Line 17: secondary: { main: '#dc004e' },
+Line 18: background: { default: '#f5f5f5' },
+Line 19: },
+Line 20: typography: {
+Line 21: fontFamily: 'Roboto, sans-serif',
+Line 22: h4: { fontWeight: 600 },
+Line 23: h6: { fontWeight: 500 },
+Line 24: },
+Line 25: components: {
+Line 26: MuiButton: {
+Line 27: styleOverrides: {
+Line 28: root: {
+Line 29: borderRadius: 8,
+Line 30: textTransform: 'none',
+Line 31: padding: '8px 16px',
+Line 32: minHeight: 44, // Mobile-friendly touch target
+Line 33: },
+Line 34: },
+Line 35: },
+Line 36: MuiPaper: {
+Line 37: styleOverrides: {
+Line 38: root: {
+Line 39: borderRadius: 12,
+Line 40: padding: '24px',
+Line 41: boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+Line 42: },
+Line 43: },
+Line 44: },
+Line 45: MuiTextField: {
+Line 46: styleOverrides: {
+Line 47: root: {
+Line 48: '& .MuiOutlinedInput-root': {
+Line 49: borderRadius: 8,
+Line 50: fontSize: 16, // Prevent zoom on iOS
+Line 51: }
+Line 52: },
+Line 53: },
+Line 54: },
+Line 55: MuiContainer: {
+Line 56: styleOverrides: {
+Line 57: root: {
+Line 58: paddingLeft: 16,
+Line 59: paddingRight: 16,
+Line 60: },
+Line 61: },
+Line 62: },
+Line 63: MuiTab: {
+Line 64: styleOverrides: {
+Line 65: root: {
+Line 66: minHeight: 48,
+Line 67: fontSize: 14,
+Line 68: },
+Line 69: },
+Line 70: },
+Line 71: },
+Line 72: breakpoints: {
+Line 73: values: {
+Line 74: xs: 0,
+Line 75: sm: 600,
+Line 76: md: 900,
+Line 77: lg: 1200,
+Line 78: xl: 1536,
+Line 79: },
+Line 80: },
+Line 81: });
+Line 82: 
+Line 83: const App = () => {
+Line 84: const [user, setUser] = useState(null);
+Line 85: const navigate = useNavigate();
+Line 86: const location = useLocation();
+Line 87: 
+Line 88: useEffect(() => {
+Line 89: console.log('App useEffect: Checking for token, current path:', location.pathname);
+Line 90: const token = localStorage.getItem('token');
+Line 91: if (token) {
+Line 92: try {
+Line 93: const decoded = jwtDecode(token);
+Line 94: console.log('App useEffect: Full decoded token:', JSON.stringify(decoded, null, 2));
+Line 95: const identityStr = decoded.sub; // String like "email:role"
+Line 96: const [email, role] = identityStr.split(':');
+Line 97: console.log('App useEffect: Parsed email/role:', { email, role });
+Line 98: if (role && role.toLowerCase() === 'patient') {
+Line 99: console.log('App useEffect: Navigating to /patient');
+Line 100: setUser({ email, role });
+Line 101: navigate('/patient', { replace: true });
+Line 102: } else if (role && role.toLowerCase() === 'doctor') {
+Line 103: console.log('App useEffect: Navigating to /doctor');
+Line 104: setUser({ email, role });
+Line 105: navigate('/doctor', { replace: true });
+Line 106: } else {
+Line 107: console.log('App useEffect: Invalid role:', role);
+Line 108: localStorage.removeItem('token');
+Line 109: if (location.pathname !== '/login') {
+Line 110: navigate('/login', { replace: true });
+Line 111: }
+Line 112: }
+Line 113: } catch (error) {
+Line 114: console.error('App useEffect: Token decode error:', error);
+Line 115: localStorage.removeItem('token');
+Line 116: if (location.pathname !== '/login') {
+Line 117: navigate('/login', { replace: true });
+Line 118: }
+Line 119: }
+Line 120: } else {
+Line 121: console.log('App useEffect: No token');
+Line 122: // Only redirect to login if not already on login or register
+Line 123: if (location.pathname !== '/login' && location.pathname !== '/register') {
+Line 124: console.log('App useEffect: Navigating to login');
+Line 125: navigate('/login', { replace: true });
+Line 126: }
+Line 127: }
+Line 128: }, [navigate, location.pathname]);
+Line 129: 
+Line 130: const handleLogin = (token) => {
+Line 131: console.log('App handleLogin: Received token:', token);
+Line 132: localStorage.setItem('token', token);
+Line 133: try {
+Line 134: const decoded = jwtDecode(token);
+Line 135: console.log('App handleLogin: Full decoded token:', JSON.stringify(decoded, null, 2));
+Line 136: const identityStr = decoded.sub; // String like "email:role"
+Line 137: const [email, role] = identityStr.split(':');
+Line 138: console.log('App handleLogin: Parsed email/role:', { email, role });
+Line 139: if (role && role.toLowerCase() === 'patient') {
+Line 140: console.log('App handleLogin: Navigating to /patient');
+Line 141: setUser({ email, role });
+Line 142: navigate('/patient', { replace: true });
+Line 143: } else if (role && role.toLowerCase() === 'doctor') {
+Line 144: console.log('App handleLogin: Navigating to /doctor');
+Line 145: setUser({ email, role });
+Line 146: navigate('/doctor', { replace: true });
+Line 147: } else {
+Line 148: console.log('App handleLogin: Invalid role:', role);
+Line 149: localStorage.removeItem('token');
+Line 150: navigate('/login', { replace: true });
+Line 151: }
+Line 152: } catch (error) {
+Line 153: console.error('App handleLogin: Token decode error:', error);
+Line 154: localStorage.removeItem('token');
+Line 155: navigate('/login', { replace: true });
+Line 156: }
+Line 157: };
+Line 158: 
+Line 159: const handleLogout = () => {
+Line 160: console.log('App handleLogout: Logging out');
+Line 161: localStorage.removeItem('token');
+Line 162: setUser(null);
+Line 163: navigate('/login', { replace: true });
+Line 164: };
+Line 165: 
+Line 166: return (
+Line 167: <ThemeProvider theme={theme}>
+Line 168: <CssBaseline />
+Line 169: <Navbar user={user} onLogout={handleLogout} />
+Line 170: <Routes>
+Line 171: <Route path="/login" element={<Login onLogin={handleLogin} />} />
+Line 172: <Route path="/register" element={<Register onRegister={handleLogin} />} />
+Line 173: <Route
+Line 174: path="/patient"
+Line 175: element={user && user.role.toLowerCase() === 'patient' ? <PatientDashboard /> : <Login onLogin={handleLogin} />}
+Line 176: />
+Line 177: <Route
+Line 178: path="/doctor"
+Line 179: element={user && user.role.toLowerCase() === 'doctor' ? <DoctorDashboard /> : <Login onLogin={handleLogin} />}
+Line 180: />
+Line 181: <Route path="/" element={<Login onLogin={handleLogin} />} />
+Line 182: </Routes>
+Line 183: </ThemeProvider>
+Line 184: );
+Line 185: };
+Line 186: 
+Line 187: export default App;
+
+---
+
+File: frontend\react_app\src\index.js
+Line 1: import React from 'react';
+Line 2: import ReactDOM from 'react-dom/client';
+Line 3: import { BrowserRouter } from 'react-router-dom';
+Line 4: import App from './App';
+Line 5: import './index.css';
+Line 6: 
+Line 7: const root = ReactDOM.createRoot(document.getElementById('root'));
+Line 8: root.render(
+Line 9: <React.StrictMode>
+Line 10: <BrowserRouter>
+Line 11: <App />
+Line 12: </BrowserRouter>
+Line 13: </React.StrictMode>
+Line 14: );
+
+---
+
+File: frontend\react_app\src\components\DoctorDashboard.js
+Line 1: // File: frontend/react_app/src/components/DoctorDashboard.js
+Line 2: import React, { useState } from 'react';
+Line 3: import {
+Line 4: Container,
+Line 5: Typography,
+Line 6: TextField,
+Line 7: Button,
+Line 8: List,
+Line 9: ListItem,
+Line 10: ListItemText,
+Line 11: ListItemIcon,
+Line 12: CircularProgress,
+Line 13: Alert,
+Line 14: Card,
+Line 15: CardContent,
+Line 16: Box,
+Line 17: Input,
+Line 18: IconButton,
+Line 19: Fade,
+Line 20: Chip,
+Line 21: Tabs,
+Line 22: Tab,
+Line 23: } from '@mui/material';
+Line 24: import {
+Line 25: Search as SearchIcon,
+Line 26: UploadFile as UploadIcon,
+Line 27: Download as DownloadIcon,
+Line 28: Person as PersonIcon,
+Line 29: AccessTime as AccessTimeIcon,
+Line 30: } from '@mui/icons-material';
+Line 31: import axios from 'axios';
+Line 32: import MedicalFormReview from './MedicalFormReview';
+Line 33: import PrescriptionManagement from './PrescriptionManagement';
+Line 34: 
+Line 35: const DoctorDashboard = () => {
+Line 36: const [patientEmail, setPatientEmail] = useState('');
+Line 37: const [selectedFile, setSelectedFile] = useState(null);
+Line 38: const [records, setRecords] = useState([]);
+Line 39: const [message, setMessage] = useState('');
+Line 40: const [loading, setLoading] = useState(false);
+Line 41: const [searchMode, setSearchMode] = useState(false);
+Line 42: const [activeTab, setActiveTab] = useState(0);
+Line 43: 
+Line 44: const handleFileChange = (e) => {
+Line 45: setSelectedFile(e.target.files[0]);
+Line 46: setMessage('');
+Line 47: };
+Line 48: 
+Line 49: const handleSearch = async () => {
+Line 50: if (!patientEmail) {
+Line 51: setMessage('Enter a patient email to search.');
+Line 52: return;
+Line 53: }
+Line 54: setLoading(true);
+Line 55: setMessage('');
+Line 56: try {
+Line 57: const response = await axios.get(`http://127.0.0.1:5000/api/storage/list?patient=${encodeURIComponent(patientEmail)}`, {
+Line 58: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 59: });
+Line 60: setRecords(response.data.files || []);
+Line 61: setMessage(`Found ${response.data.files?.length || 0} records for ${patientEmail}`);
+Line 62: } catch (err) {
+Line 63: console.error('Search error:', err);
+Line 64: setMessage(`Search failed: ${err.response?.data?.error || err.message}`);
+Line 65: setRecords([]);
+Line 66: }
+Line 67: setLoading(false);
+Line 68: };
+Line 69: 
+Line 70: const handleUploadForPatient = async () => {
+Line 71: if (!selectedFile || !patientEmail) {
+Line 72: setMessage('Select a file and enter patient email.');
+Line 73: return;
+Line 74: }
+Line 75: const formData = new FormData();
+Line 76: formData.append('file', selectedFile);
+Line 77: formData.append('patientEmail', patientEmail);
+Line 78: setLoading(true);
+Line 79: setMessage('');
+Line 80: try {
+Line 81: await axios.post('http://127.0.0.1:5000/api/storage/upload', formData, {
+Line 82: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 83: });
+Line 84: setMessage('Upload successful for patient!');
+Line 85: setSelectedFile(null);
+Line 86: handleSearch(); // Refresh records
+Line 87: } catch (err) {
+Line 88: console.error('Upload error:', err);
+Line 89: setMessage(`Upload failed: ${err.response?.data?.error || err.message}`);
+Line 90: }
+Line 91: setLoading(false);
+Line 92: };
+Line 93: 
+Line 94: const handleDownload = async (fileName) => {
+Line 95: setLoading(true);
+Line 96: setMessage('');
+Line 97: try {
+Line 98: const response = await axios.get(`http://127.0.0.1:5000/api/storage/download/${encodeURIComponent(fileName)}`, {
+Line 99: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 100: responseType: 'blob',
+Line 101: });
+Line 102: const url = window.URL.createObjectURL(new Blob([response.data]));
+Line 103: const link = document.createElement('a');
+Line 104: link.href = url;
+Line 105: link.setAttribute('download', fileName.split('/').pop());
+Line 106: document.body.appendChild(link);
+Line 107: link.click();
+Line 108: link.remove();
+Line 109: window.URL.revokeObjectURL(url);
+Line 110: setMessage('Download started! Access logged on blockchain.');
+Line 111: } catch (err) {
+Line 112: console.error('Download error:', err);
+Line 113: setMessage(`Download failed: ${err.response?.data?.error || err.message}`);
+Line 114: }
+Line 115: setLoading(false);
+Line 116: };
+Line 117: 
+Line 118: const handleTabChange = (event, newValue) => {
+Line 119: setActiveTab(newValue);
+Line 120: };
+Line 121: 
+Line 122: return (
+Line 123: <Container sx={{ mt: 4 }}>
+Line 124: <Fade in={true} timeout={600}>
+Line 125: <Typography variant="h4" gutterBottom color="primary">
+Line 126: Doctor Dashboard
+Line 127: </Typography>
+Line 128: </Fade>
+Line 129: 
+Line 130: <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+Line 131: <Tabs value={activeTab} onChange={handleTabChange}>
+Line 132: <Tab label="Patient Records" />
+Line 133: <Tab label="Medical Forms" />
+Line 134: <Tab label="Prescriptions" />
+Line 135: </Tabs>
+Line 136: </Box>
+Line 137: 
+Line 138: {activeTab === 0 && (
+Line 139: <>
+Line 140: <Chip
+Line 141: label={searchMode ? 'Upload Mode' : 'Search Mode'}
+Line 142: color="secondary"
+Line 143: onClick={() => setSearchMode(!searchMode)}
+Line 144: sx={{ mb: 2 }}
+Line 145: />
+Line 146: <Card sx={{ mb: 3, p: 2 }}>
+Line 147: <CardContent>
+Line 148: <TextField
+Line 149: label="Patient Email"
+Line 150: fullWidth
+Line 151: margin="normal"
+Line 152: value={patientEmail}
+Line 153: onChange={(e) => setPatientEmail(e.target.value)}
+Line 154: InputProps={{
+Line 155: startAdornment: <PersonIcon sx={{ mr: 1, color: 'action.active' }} />,
+Line 156: }}
+Line 157: />
+Line 158: {searchMode && (
+Line 159: <Fade in={searchMode}>
+Line 160: <Box sx={{ mt: 2 }}>
+Line 161: <Input type="file" onChange={handleFileChange} sx={{ mr: 2 }} />
+Line 162: <Button
+Line 163: variant="contained"
+Line 164: startIcon={<UploadIcon />}
+Line 165: onClick={handleUploadForPatient}
+Line 166: disabled={loading || !selectedFile || !patientEmail}
+Line 167: sx={{ mr: 2 }}
+Line 168: >
+Line 169: Upload for Patient
+Line 170: </Button>
+Line 171: </Box>
+Line 172: </Fade>
+Line 173: )}
+Line 174: <Button
+Line 175: variant="outlined"
+Line 176: startIcon={<SearchIcon />}
+Line 177: onClick={handleSearch}
+Line 178: disabled={loading || !patientEmail}
+Line 179: fullWidth
+Line 180: sx={{ mt: 2 }}
+Line 181: >
+Line 182: {loading ? <CircularProgress size={24} /> : 'Search Patient Records'}
+Line 183: </Button>
+Line 184: </CardContent>
+Line 185: </Card>
+Line 186: {message && (
+Line 187: <Fade in={true} timeout={300}>
+Line 188: <Alert severity={message.includes('success') || message.includes('Found') ? 'success' : 'error'} sx={{ mb: 2 }}>
+Line 189: {message}
+Line 190: </Alert>
+Line 191: </Fade>
+Line 192: )}
+Line 193: <Typography variant="h6" sx={{ mt: 4, mb: 2 }} color="primary">
+Line 194: Patient Records <AccessTimeIcon sx={{ ml: 1, verticalAlign: 'middle' }} />
+Line 195: </Typography>
+Line 196: {loading ? (
+Line 197: <CircularProgress sx={{ display: 'block', mx: 'auto', mt: 4 }} />
+Line 198: ) : (
+Line 199: <Card sx={{ p: 0 }}>
+Line 200: <CardContent sx={{ p: 0 }}>
+Line 201: <List>
+Line 202: {records.length === 0 ? (
+Line 203: <ListItem>
+Line 204: <ListItemText primary="No records found for this patient." secondary="Try searching another patient." />
+Line 205: </ListItem>
+Line 206: ) : (
+Line 207: records.map((record, index) => (
+Line 208: <Fade in={true} key={record.id || index} timeout={300 * index}>
+Line 209: <ListItem divider>
+Line 210: <ListItemIcon>
+Line 211: <PersonIcon color="primary" />
+Line 212: </ListItemIcon>
+Line 213: <ListItemText
+Line 214: primary={record.filename.split('/').pop()}
+Line 215: secondary={`Uploaded: ${new Date(record.upload_time).toLocaleDateString()}`}
+Line 216: />
+Line 217: <IconButton
+Line 218: onClick={() => handleDownload(record.filename)}
+Line 219: color="primary"
+Line 220: sx={{ mr: 1 }}
+Line 221: >
+Line 222: <DownloadIcon />
+Line 223: </IconButton>
+Line 224: </ListItem>
+Line 225: </Fade>
+Line 226: ))
+Line 227: )}
+Line 228: </List>
+Line 229: </CardContent>
+Line 230: </Card>
+Line 231: )}
+Line 232: </>
+Line 233: )}
+Line 234: 
+Line 235: {activeTab === 1 && <MedicalFormReview />}
+Line 236: {activeTab === 2 && <PrescriptionManagement />}
+Line 237: </Container>
+Line 238: );
+Line 239: };
+Line 240: 
+Line 241: export default DoctorDashboard;
+
+---
+
+File: frontend\react_app\src\components\Login.css
+Line 1: /* File: frontend/react_app/src/components/Login.css */
+Line 2: .MuiPaper-root {
+Line 3: position: relative !important;
+Line 4: height: 500px !important; /* Fixed height for flip */
+Line 5: transform-style: preserve-3d !important;
+Line 6: transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+Line 7: }
+Line 8: 
+Line 9: .MuiPaper-root.flipped {
+Line 10: transform: rotateY(180deg) !important;
+Line 11: }
+Line 12: 
+Line 13: .MuiPaper-root > div {
+Line 14: position: absolute !important;
+Line 15: width: 100% !important;
+Line 16: height: 100% !important;
+Line 17: backface-visibility: hidden !important;
+Line 18: display: flex !important;
+Line 19: flex-direction: column !important;
+Line 20: justify-content: center !important;
+Line 21: border-radius: 12px !important;
+Line 22: }
+Line 23: 
+Line 24: .MuiPaper-root > div:last-child {
+Line 25: transform: rotateY(180deg) !important;
+Line 26: }
+Line 27: 
+Line 28: .MuiPaper-root {
+Line 29: z-index: 1 !important; /* Low z-index for flip card */
+Line 30: }
+
+---
+
+File: frontend\react_app\src\components\Login.js
+Line 1: // File: frontend/react_app/src/components/Login.js
+Line 2: import React, { useState } from 'react';
+Line 3: import {
+Line 4: Container,
+Line 5: Paper,
+Line 6: TextField,
+Line 7: Button,
+Line 8: Typography,
+Line 9: Alert,
+Line 10: Box,
+Line 11: CircularProgress,
+Line 12: Link as MuiLink,
+Line 13: } from '@mui/material';
+Line 14: import { Link as RouterLink } from 'react-router-dom';
+Line 15: import axios from 'axios';
+Line 16: 
+Line 17: // Configure axios defaults
+Line 18: axios.defaults.timeout = 10000;
+Line 19: axios.defaults.headers.common['Content-Type'] = 'application/json';
+Line 20: 
+Line 21: const Login = ({ onLogin }) => {
+Line 22: const [email, setEmail] = useState('');
+Line 23: const [password, setPassword] = useState('');
+Line 24: const [error, setError] = useState('');
+Line 25: const [success, setSuccess] = useState('');
+Line 26: const [loading, setLoading] = useState(false);
+Line 27: 
+Line 28: // Debug logging
+Line 29: console.log('Login component loaded, onLogin function:', typeof onLogin);
+Line 30: 
+Line 31: const handleSubmit = async (e) => {
+Line 32: e.preventDefault();
+Line 33: console.log('Login form submitted with:', { email, password });
+Line 34: 
+Line 35: // Basic validation
+Line 36: if (!email || !password) {
+Line 37: setError('Please fill in all fields');
+Line 38: console.log('Validation failed: Missing email or password');
+Line 39: return;
+Line 40: }
+Line 41: 
+Line 42: // Email format validation
+Line 43: const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+Line 44: if (!emailRegex.test(email)) {
+Line 45: setError('Please enter a valid email address');
+Line 46: console.log('Validation failed: Invalid email format');
+Line 47: return;
+Line 48: }
+Line 49: 
+Line 50: setError('');
+Line 51: setSuccess('');
+Line 52: setLoading(true);
+Line 53: try {
+Line 54: console.log('Sending login request to:', 'http://127.0.0.1:5000/api/auth/login');
+Line 55: const response = await axios.post('http://127.0.0.1:5000/api/auth/login', {
+Line 56: email,
+Line 57: password,
+Line 58: });
+Line 59: console.log('Login response:', response.data);
+Line 60: if (response.data.token) {
+Line 61: console.log('Token received, calling onLogin');
+Line 62: setSuccess('Login successful! Redirecting...');
+Line 63: setEmail('');
+Line 64: setPassword('');
+Line 65: setTimeout(() => {
+Line 66: onLogin(response.data.token);
+Line 67: }, 1000);
+Line 68: } else {
+Line 69: setError('No token received from server');
+Line 70: console.log('No token in response');
+Line 71: }
+Line 72: } catch (err) {
+Line 73: console.error('Login error:', err);
+Line 74: console.error('Error response:', err.response);
+Line 75: if (err.code === 'ECONNREFUSED' || err.message.includes('Network Error')) {
+Line 76: setError('Cannot connect to server. Please make sure the backend is running on http://127.0.0.1:5000');
+Line 77: } else {
+Line 78: setError(err.response?.data?.error || err.message || 'Login failed');
+Line 79: }
+Line 80: } finally {
+Line 81: setLoading(false);
+Line 82: }
+Line 83: };
+Line 84: 
+Line 85: return (
+Line 86: <Container component="main" maxWidth="xs">
+Line 87: <Box
+Line 88: sx={{
+Line 89: marginTop: 8,
+Line 90: display: 'flex',
+Line 91: flexDirection: 'column',
+Line 92: alignItems: 'center',
+Line 93: }}
+Line 94: >
+Line 95: <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
+Line 96: <Typography component="h1" variant="h4" align="center" gutterBottom>
+Line 97: Secure Health Records
+Line 98: </Typography>
+Line 99: <Typography component="h2" variant="h5" align="center" gutterBottom>
+Line 100: Login
+Line 101: </Typography>
+Line 102: 
+Line 103: {error && (
+Line 104: <Alert severity="error" sx={{ mb: 2 }}>
+Line 105: {error}
+Line 106: </Alert>
+Line 107: )}
+Line 108: {success && (
+Line 109: <Alert severity="success" sx={{ mb: 2 }}>
+Line 110: {success}
+Line 111: </Alert>
+Line 112: )}
+Line 113: 
+Line 114: <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+Line 115: <TextField
+Line 116: margin="normal"
+Line 117: required
+Line 118: fullWidth
+Line 119: id="email"
+Line 120: label="Email Address"
+Line 121: name="email"
+Line 122: autoComplete="email"
+Line 123: autoFocus
+Line 124: value={email}
+Line 125: onChange={(e) => setEmail(e.target.value)}
+Line 126: error={!!error && error.includes('email')}
+Line 127: helperText={error && error.includes('email') ? error : ''}
+Line 128: />
+Line 129: <TextField
+Line 130: margin="normal"
+Line 131: required
+Line 132: fullWidth
+Line 133: name="password"
+Line 134: label="Password"
+Line 135: type="password"
+Line 136: id="password"
+Line 137: autoComplete="current-password"
+Line 138: value={password}
+Line 139: onChange={(e) => setPassword(e.target.value)}
+Line 140: error={!!error && error.includes('password')}
+Line 141: helperText={error && error.includes('password') ? error : ''}
+Line 142: />
+Line 143: <Button
+Line 144: type="submit"
+Line 145: fullWidth
+Line 146: variant="contained"
+Line 147: sx={{ mt: 3, mb: 2, py: 1.5 }}
+Line 148: disabled={loading}
+Line 149: >
+Line 150: {loading ? <CircularProgress size={24} /> : 'Login'}
+Line 151: </Button>
+Line 152: <Box sx={{ textAlign: 'center' }}>
+Line 153: <MuiLink component={RouterLink} to="/register" variant="body2">
+Line 154: Don't have an account? Register
+Line 155: </MuiLink>
+Line 156: </Box>
+Line 157: </Box>
+Line 158: </Paper>
+Line 159: </Box>
+Line 160: </Container>
+Line 161: );
+Line 162: };
+Line 163: 
+Line 164: export default Login;
+
+---
+
+File: frontend\react_app\src\components\MedicalFormReview.js
+Line 1: import React, { useState, useEffect } from 'react';
+Line 2: import {
+Line 3: Container,
+Line 4: Typography,
+Line 5: Card,
+Line 6: CardContent,
+Line 7: Button,
+Line 8: Box,
+Line 9: Alert,
+Line 10: CircularProgress,
+Line 11: List,
+Line 12: ListItem,
+Line 13: ListItemText,
+Line 14: ListItemSecondaryAction,
+Line 15: IconButton,
+Line 16: Dialog,
+Line 17: DialogTitle,
+Line 18: DialogContent,
+Line 19: DialogActions,
+Line 20: Chip,
+Line 21: Paper,
+Line 22: Divider,
+Line 23: Grid,
+Line 24: TextField,
+Line 25: } from '@mui/material';
+Line 26: import {
+Line 27: Visibility as ViewIcon,
+Line 28: CheckCircle as ApproveIcon,
+Line 29: RateReview as ReviewIcon,
+Line 30: } from '@mui/icons-material';
+Line 31: import axios from 'axios';
+Line 32: 
+Line 33: const MedicalFormReview = () => {
+Line 34: const [forms, setForms] = useState([]);
+Line 35: const [loading, setLoading] = useState(false);
+Line 36: const [message, setMessage] = useState('');
+Line 37: const [viewDialogOpen, setViewDialogOpen] = useState(false);
+Line 38: const [selectedForm, setSelectedForm] = useState(null);
+Line 39: const [reviewNotes, setReviewNotes] = useState('');
+Line 40: 
+Line 41: useEffect(() => {
+Line 42: fetchForms();
+Line 43: }, []);
+Line 44: 
+Line 45: const fetchForms = async () => {
+Line 46: setLoading(true);
+Line 47: try {
+Line 48: const response = await axios.get('http://127.0.0.1:5000/api/medical/forms', {
+Line 49: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 50: });
+Line 51: setForms(response.data.forms || []);
+Line 52: } catch (err) {
+Line 53: console.error('Error fetching forms:', err);
+Line 54: setMessage(`Error: ${err.response?.data?.error || err.message}`);
+Line 55: }
+Line 56: setLoading(false);
+Line 57: };
+Line 58: 
+Line 59: const reviewForm = async (formId, status) => {
+Line 60: try {
+Line 61: await axios.post(`http://127.0.0.1:5000/api/medical/forms/${formId}/review`, {
+Line 62: status: status,
+Line 63: notes: reviewNotes
+Line 64: }, {
+Line 65: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 66: });
+Line 67: 
+Line 68: setMessage(`Form ${status} successfully!`);
+Line 69: setViewDialogOpen(false);
+Line 70: setReviewNotes('');
+Line 71: fetchForms();
+Line 72: 
+Line 73: } catch (err) {
+Line 74: console.error('Error reviewing form:', err);
+Line 75: setMessage(`Error: ${err.response?.data?.error || err.message}`);
+Line 76: }
+Line 77: };
+Line 78: 
+Line 79: const viewForm = (form) => {
+Line 80: setSelectedForm(form);
+Line 81: setViewDialogOpen(true);
+Line 82: setReviewNotes('');
+Line 83: };
+Line 84: 
+Line 85: const getStatusColor = (status) => {
+Line 86: switch (status) {
+Line 87: case 'approved': return 'success';
+Line 88: case 'reviewed': return 'primary';
+Line 89: case 'pending': return 'warning';
+Line 90: default: return 'default';
+Line 91: }
+Line 92: };
+Line 93: 
+Line 94: const formatFormData = (formData) => {
+Line 95: return Object.entries(formData).map(([key, value]) => (
+Line 96: <Box key={key} sx={{ mb: 2 }}>
+Line 97: <Typography variant="subtitle2" sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}>
+Line 98: {key.replace(/_/g, ' ')}:
+Line 99: </Typography>
+Line 100: <Typography variant="body2" sx={{ ml: 2 }}>
+Line 101: {value || 'Not provided'}
+Line 102: </Typography>
+Line 103: </Box>
+Line 104: ));
+Line 105: };
+Line 106: 
+Line 107: return (
+Line 108: <Container sx={{ mt: 4 }}>
+Line 109: <Typography variant="h4" gutterBottom>
+Line 110: Medical Form Review
+Line 111: </Typography>
+Line 112: 
+Line 113: <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+Line 114: Review and approve patient medical forms
+Line 115: </Typography>
+Line 116: 
+Line 117: {message && (
+Line 118: <Alert severity={message.includes('success') ? 'success' : 'error'} sx={{ mb: 2 }}>
+Line 119: {message}
+Line 120: </Alert>
+Line 121: )}
+Line 122: 
+Line 123: <Card>
+Line 124: <CardContent>
+Line 125: <Typography variant="h6" gutterBottom>
+Line 126: Pending Forms ({forms.filter(f => f.status === 'pending').length})
+Line 127: </Typography>
+Line 128: {loading ? (
+Line 129: <CircularProgress />
+Line 130: ) : forms.length === 0 ? (
+Line 131: <Typography>No forms to review.</Typography>
+Line 132: ) : (
+Line 133: <List>
+Line 134: {forms.map((form) => (
+Line 135: <ListItem key={form.id} divider>
+Line 136: <ListItemText
+Line 137: primary={
+Line 138: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+Line 139: <Typography variant="h6">
+Line 140: {form.form_type.replace('_', ' ').toUpperCase()}
+Line 141: </Typography>
+Line 142: <Chip
+Line 143: label={form.status}
+Line 144: color={getStatusColor(form.status)}
+Line 145: size="small"
+Line 146: />
+Line 147: </Box>
+Line 148: }
+Line 149: secondary={
+Line 150: <Box>
+Line 151: <Typography variant="body2">
+Line 152: Patient: {form.patient_email}
+Line 153: </Typography>
+Line 154: <Typography variant="body2">
+Line 155: Submitted: {new Date(form.submitted_at).toLocaleString()}
+Line 156: </Typography>
+Line 157: {form.doctor_email && (
+Line 158: <Typography variant="body2">
+Line 159: Reviewed by: {form.doctor_email}
+Line 160: </Typography>
+Line 161: )}
+Line 162: </Box>
+Line 163: }
+Line 164: />
+Line 165: <ListItemSecondaryAction>
+Line 166: <IconButton onClick={() => viewForm(form)}>
+Line 167: <ViewIcon />
+Line 168: </IconButton>
+Line 169: </ListItemSecondaryAction>
+Line 170: </ListItem>
+Line 171: ))}
+Line 172: </List>
+Line 173: )}
+Line 174: </CardContent>
+Line 175: </Card>
+Line 176: 
+Line 177: {/* View Form Dialog */}
+Line 178: <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} maxWidth="md" fullWidth>
+Line 179: <DialogTitle>
+Line 180: Review Form: {selectedForm?.form_type.replace('_', ' ').toUpperCase()}
+Line 181: </DialogTitle>
+Line 182: <DialogContent>
+Line 183: {selectedForm && (
+Line 184: <Box>
+Line 185: <Grid container spacing={2} sx={{ mb: 3 }}>
+Line 186: <Grid item xs={12} sm={6}>
+Line 187: <Typography variant="subtitle2" color="text.secondary">
+Line 188: Patient Email
+Line 189: </Typography>
+Line 190: <Typography variant="body1">
+Line 191: {selectedForm.patient_email}
+Line 192: </Typography>
+Line 193: </Grid>
+Line 194: <Grid item xs={12} sm={6}>
+Line 195: <Typography variant="subtitle2" color="text.secondary">
+Line 196: Form Type
+Line 197: </Typography>
+Line 198: <Typography variant="body1">
+Line 199: {selectedForm.form_type.replace('_', ' ').toUpperCase()}
+Line 200: </Typography>
+Line 201: </Grid>
+Line 202: <Grid item xs={12} sm={6}>
+Line 203: <Typography variant="subtitle2" color="text.secondary">
+Line 204: Submitted Date
+Line 205: </Typography>
+Line 206: <Typography variant="body1">
+Line 207: {new Date(selectedForm.submitted_at).toLocaleString()}
+Line 208: </Typography>
+Line 209: </Grid>
+Line 210: <Grid item xs={12} sm={6}>
+Line 211: <Typography variant="subtitle2" color="text.secondary">
+Line 212: Status
+Line 213: </Typography>
+Line 214: <Chip
+Line 215: label={selectedForm.status}
+Line 216: color={getStatusColor(selectedForm.status)}
+Line 217: size="small"
+Line 218: />
+Line 219: </Grid>
+Line 220: </Grid>
+Line 221: 
+Line 222: <Divider sx={{ my: 2 }} />
+Line 223: 
+Line 224: <Typography variant="h6" gutterBottom>
+Line 225: Form Data
+Line 226: </Typography>
+Line 227: <Paper sx={{ p: 2, backgroundColor: '#f5f5f5' }}>
+Line 228: {formatFormData(selectedForm.form_data)}
+Line 229: </Paper>
+Line 230: 
+Line 231: <TextField
+Line 232: fullWidth
+Line 233: label="Review Notes (Optional)"
+Line 234: multiline
+Line 235: rows={3}
+Line 236: value={reviewNotes}
+Line 237: onChange={(e) => setReviewNotes(e.target.value)}
+Line 238: sx={{ mt: 3 }}
+Line 239: placeholder="Add any notes about this form review..."
+Line 240: />
+Line 241: </Box>
+Line 242: )}
+Line 243: </DialogContent>
+Line 244: <DialogActions>
+Line 245: <Button onClick={() => setViewDialogOpen(false)}>Cancel</Button>
+Line 246: {selectedForm?.status === 'pending' && (
+Line 247: <>
+Line 248: <Button
+Line 249: onClick={() => reviewForm(selectedForm.id, 'reviewed')}
+Line 250: startIcon={<ReviewIcon />}
+Line 251: variant="outlined"
+Line 252: >
+Line 253: Mark as Reviewed
+Line 254: </Button>
+Line 255: <Button
+Line 256: onClick={() => reviewForm(selectedForm.id, 'approved')}
+Line 257: startIcon={<ApproveIcon />}
+Line 258: variant="contained"
+Line 259: color="success"
+Line 260: >
+Line 261: Approve
+Line 262: </Button>
+Line 263: </>
+Line 264: )}
+Line 265: </DialogActions>
+Line 266: </Dialog>
+Line 267: </Container>
+Line 268: );
+Line 269: };
+Line 270: 
+Line 271: export default MedicalFormReview;
+
+---
+
+File: frontend\react_app\src\components\MedicalForms.js
+Line 1: import React, { useState, useEffect } from 'react';
+Line 2: import {
+Line 3: Container,
+Line 4: Typography,
+Line 5: Card,
+Line 6: CardContent,
+Line 7: TextField,
+Line 8: Button,
+Line 9: Grid,
+Line 10: FormControl,
+Line 11: InputLabel,
+Line 12: Select,
+Line 13: MenuItem,
+Line 14: Box,
+Line 15: Alert,
+Line 16: CircularProgress,
+Line 17: Chip,
+Line 18: List,
+Line 19: ListItem,
+Line 20: ListItemText,
+Line 21: ListItemSecondaryAction,
+Line 22: IconButton,
+Line 23: Dialog,
+Line 24: DialogTitle,
+Line 25: DialogContent,
+Line 26: DialogActions,
+Line 27: Stepper,
+Line 28: Step,
+Line 29: StepLabel,
+Line 30: Paper,
+Line 31: Divider,
+Line 32: } from '@mui/material';
+Line 33: import {
+Line 34: Add as AddIcon,
+Line 35: Edit as EditIcon,
+Line 36: Visibility as ViewIcon,
+Line 37: CheckCircle as CheckIcon,
+Line 38: Schedule as ScheduleIcon,
+Line 39: } from '@mui/icons-material';
+Line 40: import axios from 'axios';
+Line 41: 
+Line 42: const MedicalForms = () => {
+Line 43: const [activeStep, setActiveStep] = useState(0);
+Line 44: const [formData, setFormData] = useState({
+Line 45: health_profile: {},
+Line 46: symptoms: {},
+Line 47: vitals: {},
+Line 48: medications: {},
+Line 49: family_history: {}
+Line 50: });
+Line 51: const [submittedForms, setSubmittedForms] = useState([]);
+Line 52: const [loading, setLoading] = useState(false);
+Line 53: const [message, setMessage] = useState('');
+Line 54: const [viewDialogOpen, setViewDialogOpen] = useState(false);
+Line 55: const [selectedForm, setSelectedForm] = useState(null);
+Line 56: 
+Line 57: const steps = [
+Line 58: 'Health Profile',
+Line 59: 'Current Symptoms',
+Line 60: 'Vital Signs',
+Line 61: 'Medications',
+Line 62: 'Family History'
+Line 63: ];
+Line 64: 
+Line 65: useEffect(() => {
+Line 66: fetchSubmittedForms();
+Line 67: }, []);
+Line 68: 
+Line 69: const fetchSubmittedForms = async () => {
+Line 70: try {
+Line 71: const response = await axios.get('http://127.0.0.1:5000/api/medical/forms', {
+Line 72: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 73: });
+Line 74: setSubmittedForms(response.data.forms || []);
+Line 75: } catch (err) {
+Line 76: console.error('Error fetching forms:', err);
+Line 77: }
+Line 78: };
+Line 79: 
+Line 80: const handleNext = () => {
+Line 81: setActiveStep((prevActiveStep) => prevActiveStep + 1);
+Line 82: };
+Line 83: 
+Line 84: const handleBack = () => {
+Line 85: setActiveStep((prevActiveStep) => prevActiveStep - 1);
+Line 86: };
+Line 87: 
+Line 88: const handleInputChange = (stepKey, field, value) => {
+Line 89: setFormData(prev => ({
+Line 90: ...prev,
+Line 91: [stepKey]: {
+Line 92: ...prev[stepKey],
+Line 93: [field]: value
+Line 94: }
+Line 95: }));
+Line 96: };
+Line 97: 
+Line 98: const submitForm = async () => {
+Line 99: setLoading(true);
+Line 100: setMessage('');
+Line 101: 
+Line 102: try {
+Line 103: const stepKeys = ['health_profile', 'symptoms', 'vitals', 'medications', 'family_history'];
+Line 104: const currentStepKey = stepKeys[activeStep];
+Line 105: 
+Line 106: await axios.post('http://127.0.0.1:5000/api/medical/forms', {
+Line 107: form_type: currentStepKey,
+Line 108: form_data: formData[currentStepKey]
+Line 109: }, {
+Line 110: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 111: });
+Line 112: 
+Line 113: setMessage('Form submitted successfully!');
+Line 114: fetchSubmittedForms();
+Line 115: 
+Line 116: // Reset current step data
+Line 117: setFormData(prev => ({
+Line 118: ...prev,
+Line 119: [currentStepKey]: {}
+Line 120: }));
+Line 121: 
+Line 122: } catch (err) {
+Line 123: console.error('Error submitting form:', err);
+Line 124: setMessage(`Error: ${err.response?.data?.error || err.message}`);
+Line 125: }
+Line 126: setLoading(false);
+Line 127: };
+Line 128: 
+Line 129: const viewForm = (form) => {
+Line 130: setSelectedForm(form);
+Line 131: setViewDialogOpen(true);
+Line 132: };
+Line 133: 
+Line 134: const renderHealthProfile = () => (
+Line 135: <Grid container spacing={3}>
+Line 136: <Grid item xs={12} sm={6}>
+Line 137: <TextField
+Line 138: fullWidth
+Line 139: label="Age"
+Line 140: type="number"
+Line 141: value={formData.health_profile.age || ''}
+Line 142: onChange={(e) => handleInputChange('health_profile', 'age', e.target.value)}
+Line 143: />
+Line 144: </Grid>
+Line 145: <Grid item xs={12} sm={6}>
+Line 146: <TextField
+Line 147: fullWidth
+Line 148: label="Gender"
+Line 149: select
+Line 150: value={formData.health_profile.gender || ''}
+Line 151: onChange={(e) => handleInputChange('health_profile', 'gender', e.target.value)}
+Line 152: >
+Line 153: <MenuItem value="male">Male</MenuItem>
+Line 154: <MenuItem value="female">Female</MenuItem>
+Line 155: <MenuItem value="other">Other</MenuItem>
+Line 156: </TextField>
+Line 157: </Grid>
+Line 158: <Grid item xs={12} sm={6}>
+Line 159: <TextField
+Line 160: fullWidth
+Line 161: label="Height (cm)"
+Line 162: type="number"
+Line 163: value={formData.health_profile.height || ''}
+Line 164: onChange={(e) => handleInputChange('health_profile', 'height', e.target.value)}
+Line 165: />
+Line 166: </Grid>
+Line 167: <Grid item xs={12} sm={6}>
+Line 168: <TextField
+Line 169: fullWidth
+Line 170: label="Weight (kg)"
+Line 171: type="number"
+Line 172: value={formData.health_profile.weight || ''}
+Line 173: onChange={(e) => handleInputChange('health_profile', 'weight', e.target.value)}
+Line 174: />
+Line 175: </Grid>
+Line 176: <Grid item xs={12} sm={6}>
+Line 177: <TextField
+Line 178: fullWidth
+Line 179: label="Blood Type"
+Line 180: select
+Line 181: value={formData.health_profile.blood_type || ''}
+Line 182: onChange={(e) => handleInputChange('health_profile', 'blood_type', e.target.value)}
+Line 183: >
+Line 184: <MenuItem value="A+">A+</MenuItem>
+Line 185: <MenuItem value="A-">A-</MenuItem>
+Line 186: <MenuItem value="B+">B+</MenuItem>
+Line 187: <MenuItem value="B-">B-</MenuItem>
+Line 188: <MenuItem value="AB+">AB+</MenuItem>
+Line 189: <MenuItem value="AB-">AB-</MenuItem>
+Line 190: <MenuItem value="O+">O+</MenuItem>
+Line 191: <MenuItem value="O-">O-</MenuItem>
+Line 192: </TextField>
+Line 193: </Grid>
+Line 194: <Grid item xs={12}>
+Line 195: <TextField
+Line 196: fullWidth
+Line 197: label="Allergies"
+Line 198: multiline
+Line 199: rows={3}
+Line 200: value={formData.health_profile.allergies || ''}
+Line 201: onChange={(e) => handleInputChange('health_profile', 'allergies', e.target.value)}
+Line 202: placeholder="List any known allergies..."
+Line 203: />
+Line 204: </Grid>
+Line 205: <Grid item xs={12}>
+Line 206: <TextField
+Line 207: fullWidth
+Line 208: label="Medical History"
+Line 209: multiline
+Line 210: rows={4}
+Line 211: value={formData.health_profile.medical_history || ''}
+Line 212: onChange={(e) => handleInputChange('health_profile', 'medical_history', e.target.value)}
+Line 213: placeholder="Previous medical conditions, surgeries, etc..."
+Line 214: />
+Line 215: </Grid>
+Line 216: </Grid>
+Line 217: );
+Line 218: 
+Line 219: const renderSymptoms = () => (
+Line 220: <Grid container spacing={3}>
+Line 221: <Grid item xs={12}>
+Line 222: <TextField
+Line 223: fullWidth
+Line 224: label="Current Symptoms"
+Line 225: multiline
+Line 226: rows={4}
+Line 227: value={formData.symptoms.current_symptoms || ''}
+Line 228: onChange={(e) => handleInputChange('symptoms', 'current_symptoms', e.target.value)}
+Line 229: placeholder="Describe your current symptoms..."
+Line 230: />
+Line 231: </Grid>
+Line 232: <Grid item xs={12} sm={6}>
+Line 233: <TextField
+Line 234: fullWidth
+Line 235: label="Duration"
+Line 236: value={formData.symptoms.duration || ''}
+Line 237: onChange={(e) => handleInputChange('symptoms', 'duration', e.target.value)}
+Line 238: placeholder="e.g., 3 days, 1 week..."
+Line 239: />
+Line 240: </Grid>
+Line 241: <Grid item xs={12} sm={6}>
+Line 242: <TextField
+Line 243: fullWidth
+Line 244: label="Severity (1-10)"
+Line 245: type="number"
+Line 246: inputProps={{ min: 1, max: 10 }}
+Line 247: value={formData.symptoms.severity || ''}
+Line 248: onChange={(e) => handleInputChange('symptoms', 'severity', e.target.value)}
+Line 249: />
+Line 250: </Grid>
+Line 251: <Grid item xs={12}>
+Line 252: <TextField
+Line 253: fullWidth
+Line 254: label="Additional Notes"
+Line 255: multiline
+Line 256: rows={3}
+Line 257: value={formData.symptoms.notes || ''}
+Line 258: onChange={(e) => handleInputChange('symptoms', 'notes', e.target.value)}
+Line 259: placeholder="Any additional information..."
+Line 260: />
+Line 261: </Grid>
+Line 262: </Grid>
+Line 263: );
+Line 264: 
+Line 265: const renderVitals = () => (
+Line 266: <Grid container spacing={3}>
+Line 267: <Grid item xs={12} sm={6}>
+Line 268: <TextField
+Line 269: fullWidth
+Line 270: label="Blood Pressure (mmHg)"
+Line 271: value={formData.vitals.blood_pressure || ''}
+Line 272: onChange={(e) => handleInputChange('vitals', 'blood_pressure', e.target.value)}
+Line 273: placeholder="e.g., 120/80"
+Line 274: />
+Line 275: </Grid>
+Line 276: <Grid item xs={12} sm={6}>
+Line 277: <TextField
+Line 278: fullWidth
+Line 279: label="Heart Rate (bpm)"
+Line 280: type="number"
+Line 281: value={formData.vitals.heart_rate || ''}
+Line 282: onChange={(e) => handleInputChange('vitals', 'heart_rate', e.target.value)}
+Line 283: />
+Line 284: </Grid>
+Line 285: <Grid item xs={12} sm={6}>
+Line 286: <TextField
+Line 287: fullWidth
+Line 288: label="Temperature (°F)"
+Line 289: type="number"
+Line 290: value={formData.vitals.temperature || ''}
+Line 291: onChange={(e) => handleInputChange('vitals', 'temperature', e.target.value)}
+Line 292: />
+Line 293: </Grid>
+Line 294: <Grid item xs={12} sm={6}>
+Line 295: <TextField
+Line 296: fullWidth
+Line 297: label="Oxygen Saturation (%)"
+Line 298: type="number"
+Line 299: inputProps={{ min: 0, max: 100 }}
+Line 300: value={formData.vitals.oxygen_saturation || ''}
+Line 301: onChange={(e) => handleInputChange('vitals', 'oxygen_saturation', e.target.value)}
+Line 302: />
+Line 303: </Grid>
+Line 304: <Grid item xs={12} sm={6}>
+Line 305: <TextField
+Line 306: fullWidth
+Line 307: label="Respiratory Rate"
+Line 308: type="number"
+Line 309: value={formData.vitals.respiratory_rate || ''}
+Line 310: onChange={(e) => handleInputChange('vitals', 'respiratory_rate', e.target.value)}
+Line 311: />
+Line 312: </Grid>
+Line 313: <Grid item xs={12} sm={6}>
+Line 314: <TextField
+Line 315: fullWidth
+Line 316: label="Date Measured"
+Line 317: type="date"
+Line 318: InputLabelProps={{ shrink: true }}
+Line 319: value={formData.vitals.date_measured || ''}
+Line 320: onChange={(e) => handleInputChange('vitals', 'date_measured', e.target.value)}
+Line 321: />
+Line 322: </Grid>
+Line 323: </Grid>
+Line 324: );
+Line 325: 
+Line 326: const renderMedications = () => (
+Line 327: <Grid container spacing={3}>
+Line 328: <Grid item xs={12}>
+Line 329: <TextField
+Line 330: fullWidth
+Line 331: label="Current Medications"
+Line 332: multiline
+Line 333: rows={4}
+Line 334: value={formData.medications.current_medications || ''}
+Line 335: onChange={(e) => handleInputChange('medications', 'current_medications', e.target.value)}
+Line 336: placeholder="List all current medications with dosages..."
+Line 337: />
+Line 338: </Grid>
+Line 339: <Grid item xs={12}>
+Line 340: <TextField
+Line 341: fullWidth
+Line 342: label="Medication Allergies"
+Line 343: multiline
+Line 344: rows={3}
+Line 345: value={formData.medications.medication_allergies || ''}
+Line 346: onChange={(e) => handleInputChange('medications', 'medication_allergies', e.target.value)}
+Line 347: placeholder="Any adverse reactions to medications..."
+Line 348: />
+Line 349: </Grid>
+Line 350: <Grid item xs={12}>
+Line 351: <TextField
+Line 352: fullWidth
+Line 353: label="Supplements"
+Line 354: multiline
+Line 355: rows={3}
+Line 356: value={formData.medications.supplements || ''}
+Line 357: onChange={(e) => handleInputChange('medications', 'supplements', e.target.value)}
+Line 358: placeholder="Vitamins, herbal supplements, etc..."
+Line 359: />
+Line 360: </Grid>
+Line 361: </Grid>
+Line 362: );
+Line 363: 
+Line 364: const renderFamilyHistory = () => (
+Line 365: <Grid container spacing={3}>
+Line 366: <Grid item xs={12}>
+Line 367: <TextField
+Line 368: fullWidth
+Line 369: label="Family Medical History"
+Line 370: multiline
+Line 371: rows={6}
+Line 372: value={formData.family_history.family_history || ''}
+Line 373: onChange={(e) => handleInputChange('family_history', 'family_history', e.target.value)}
+Line 374: placeholder="Include conditions that run in your family: diabetes, heart disease, cancer, mental health conditions, etc..."
+Line 375: />
+Line 376: </Grid>
+Line 377: <Grid item xs={12}>
+Line 378: <TextField
+Line 379: fullWidth
+Line 380: label="Genetic Conditions"
+Line 381: multiline
+Line 382: rows={3}
+Line 383: value={formData.family_history.genetic_conditions || ''}
+Line 384: onChange={(e) => handleInputChange('family_history', 'genetic_conditions', e.target.value)}
+Line 385: placeholder="Any known genetic conditions in the family..."
+Line 386: />
+Line 387: </Grid>
+Line 388: </Grid>
+Line 389: );
+Line 390: 
+Line 391: const renderStepContent = (step) => {
+Line 392: switch (step) {
+Line 393: case 0: return renderHealthProfile();
+Line 394: case 1: return renderSymptoms();
+Line 395: case 2: return renderVitals();
+Line 396: case 3: return renderMedications();
+Line 397: case 4: return renderFamilyHistory();
+Line 398: default: return 'Unknown step';
+Line 399: }
+Line 400: };
+Line 401: 
+Line 402: return (
+Line 403: <Container sx={{ mt: 4 }}>
+Line 404: <Typography variant="h4" gutterBottom>
+Line 405: Medical Forms
+Line 406: </Typography>
+Line 407: 
+Line 408: <Card sx={{ mb: 4 }}>
+Line 409: <CardContent>
+Line 410: <Typography variant="h6" gutterBottom>
+Line 411: Complete Your Medical Information
+Line 412: </Typography>
+Line 413: <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
+Line 414: {steps.map((label) => (
+Line 415: <Step key={label}>
+Line 416: <StepLabel>{label}</StepLabel>
+Line 417: </Step>
+Line 418: ))}
+Line 419: </Stepper>
+Line 420: 
+Line 421: <Paper sx={{ p: 3, mb: 3 }}>
+Line 422: <Typography variant="h6" gutterBottom>
+Line 423: {steps[activeStep]}
+Line 424: </Typography>
+Line 425: {renderStepContent(activeStep)}
+Line 426: </Paper>
+Line 427: 
+Line 428: <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+Line 429: <Button
+Line 430: disabled={activeStep === 0}
+Line 431: onClick={handleBack}
+Line 432: >
+Line 433: Back
+Line 434: </Button>
+Line 435: <Box>
+Line 436: {activeStep === steps.length - 1 ? (
+Line 437: <Button
+Line 438: variant="contained"
+Line 439: onClick={submitForm}
+Line 440: disabled={loading}
+Line 441: startIcon={loading ? <CircularProgress size={20} /> : <AddIcon />}
+Line 442: >
+Line 443: Submit Form
+Line 444: </Button>
+Line 445: ) : (
+Line 446: <Button variant="contained" onClick={handleNext}>
+Line 447: Next
+Line 448: </Button>
+Line 449: )}
+Line 450: </Box>
+Line 451: </Box>
+Line 452: </CardContent>
+Line 453: </Card>
+Line 454: 
+Line 455: {message && (
+Line 456: <Alert severity={message.includes('success') ? 'success' : 'error'} sx={{ mb: 2 }}>
+Line 457: {message}
+Line 458: </Alert>
+Line 459: )}
+Line 460: 
+Line 461: <Card>
+Line 462: <CardContent>
+Line 463: <Typography variant="h6" gutterBottom>
+Line 464: Submitted Forms
+Line 465: </Typography>
+Line 466: {submittedForms.length === 0 ? (
+Line 467: <Typography>No forms submitted yet.</Typography>
+Line 468: ) : (
+Line 469: <List>
+Line 470: {submittedForms.map((form) => (
+Line 471: <ListItem key={form.id} divider>
+Line 472: <ListItemText
+Line 473: primary={form.form_type.replace('_', ' ').toUpperCase()}
+Line 474: secondary={`Submitted: ${new Date(form.submitted_at).toLocaleDateString()} - Status: ${form.status}`}
+Line 475: />
+Line 476: <ListItemSecondaryAction>
+Line 477: <Chip
+Line 478: label={form.status}
+Line 479: color={form.status === 'approved' ? 'success' : form.status === 'reviewed' ? 'primary' : 'default'}
+Line 480: size="small"
+Line 481: sx={{ mr: 1 }}
+Line 482: />
+Line 483: <IconButton onClick={() => viewForm(form)}>
+Line 484: <ViewIcon />
+Line 485: </IconButton>
+Line 486: </ListItemSecondaryAction>
+Line 487: </ListItem>
+Line 488: ))}
+Line 489: </List>
+Line 490: )}
+Line 491: </CardContent>
+Line 492: </Card>
+Line 493: 
+Line 494: <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} maxWidth="md" fullWidth>
+Line 495: <DialogTitle>
+Line 496: {selectedForm?.form_type.replace('_', ' ').toUpperCase()} Form
+Line 497: </DialogTitle>
+Line 498: <DialogContent>
+Line 499: {selectedForm && (
+Line 500: <Box>
+Line 501: <Typography variant="body2" color="text.secondary" gutterBottom>
+Line 502: Submitted: {new Date(selectedForm.submitted_at).toLocaleString()}
+Line 503: </Typography>
+Line 504: <Typography variant="body2" color="text.secondary" gutterBottom>
+Line 505: Status: {selectedForm.status}
+Line 506: </Typography>
+Line 507: {selectedForm.doctor_email && (
+Line 508: <Typography variant="body2" color="text.secondary" gutterBottom>
+Line 509: Reviewed by: {selectedForm.doctor_email}
+Line 510: </Typography>
+Line 511: )}
+Line 512: <Divider sx={{ my: 2 }} />
+Line 513: <pre style={{ whiteSpace: 'pre-wrap', fontSize: '14px' }}>
+Line 514: {JSON.stringify(selectedForm.form_data, null, 2)}
+Line 515: </pre>
+Line 516: </Box>
+Line 517: )}
+Line 518: </DialogContent>
+Line 519: <DialogActions>
+Line 520: <Button onClick={() => setViewDialogOpen(false)}>Close</Button>
+Line 521: </DialogActions>
+Line 522: </Dialog>
+Line 523: </Container>
+Line 524: );
+Line 525: };
+Line 526: 
+Line 527: export default MedicalForms;
+
+---
+
+File: frontend\react_app\src\components\Navbar.js
+Line 1: import React from 'react';
+Line 2: import { Link, useNavigate } from 'react-router-dom';
+Line 3: import {
+Line 4: AppBar,
+Line 5: Toolbar,
+Line 6: Typography,
+Line 7: Button,
+Line 8: Box,
+Line 9: IconButton
+Line 10: } from '@mui/material';
+Line 11: import { AccountCircle, ExitToApp } from '@mui/icons-material';
+Line 12: 
+Line 13: const Navbar = ({ user, onLogout }) => {
+Line 14: const navigate = useNavigate();
+Line 15: 
+Line 16: // Debug logging
+Line 17: console.log('Navbar rendered with user:', user);
+Line 18: 
+Line 19: const handleLogout = () => {
+Line 20: onLogout();
+Line 21: navigate('/login');
+Line 22: };
+Line 23: 
+Line 24: return (
+Line 25: <AppBar position="static" sx={{ mb: 4 }}>
+Line 26: <Toolbar>
+Line 27: <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+Line 28: Secure Health Records
+Line 29: </Typography>
+Line 30: 
+Line 31: {user ? (
+Line 32: <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+Line 33: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+Line 34: <AccountCircle />
+Line 35: <Typography variant="body2">
+Line 36: {user.email} ({user.role})
+Line 37: </Typography>
+Line 38: </Box>
+Line 39: 
+Line 40: {user.role === 'patient' ? (
+Line 41: <Button
+Line 42: color="inherit"
+Line 43: component={Link}
+Line 44: to="/patient"
+Line 45: sx={{ color: 'white' }}
+Line 46: >
+Line 47: Patient Dashboard
+Line 48: </Button>
+Line 49: ) : (
+Line 50: <Button
+Line 51: color="inherit"
+Line 52: component={Link}
+Line 53: to="/doctor"
+Line 54: sx={{ color: 'white' }}
+Line 55: >
+Line 56: Doctor Dashboard
+Line 57: </Button>
+Line 58: )}
+Line 59: 
+Line 60: <IconButton
+Line 61: color="inherit"
+Line 62: onClick={handleLogout}
+Line 63: title="Logout"
+Line 64: >
+Line 65: <ExitToApp />
+Line 66: </IconButton>
+Line 67: </Box>
+Line 68: ) : (
+Line 69: <Box sx={{ display: 'flex', gap: 1 }}>
+Line 70: <Button
+Line 71: color="inherit"
+Line 72: component={Link}
+Line 73: to="/login"
+Line 74: sx={{ color: 'white' }}
+Line 75: >
+Line 76: Login
+Line 77: </Button>
+Line 78: <Button
+Line 79: color="inherit"
+Line 80: component={Link}
+Line 81: to="/register"
+Line 82: sx={{ color: 'white' }}
+Line 83: >
+Line 84: Register
+Line 85: </Button>
+Line 86: </Box>
+Line 87: )}
+Line 88: </Toolbar>
+Line 89: </AppBar>
+Line 90: );
+Line 91: };
+Line 92: 
+Line 93: export default Navbar;
+
+---
+
+File: frontend\react_app\src\components\PatientDashboard.js
+Line 1: // File: frontend/react_app/src/components/PatientDashboard.js
+Line 2: import React, { useState, useEffect } from 'react';
+Line 3: import { Container, Typography, Button, List, ListItem, ListItemText, CircularProgress, Alert, Box, Input, Tabs, Tab } from '@mui/material';
+Line 4: import axios from 'axios';
+Line 5: import MedicalForms from './MedicalForms';
+Line 6: 
+Line 7: const PatientDashboard = () => {
+Line 8: const [selectedFile, setSelectedFile] = useState(null);
+Line 9: const [records, setRecords] = useState([]);
+Line 10: const [message, setMessage] = useState('');
+Line 11: const [loading, setLoading] = useState(false);
+Line 12: const [activeTab, setActiveTab] = useState(0);
+Line 13: 
+Line 14: useEffect(() => {
+Line 15: fetchRecords();
+Line 16: }, []);
+Line 17: 
+Line 18: const fetchRecords = async () => {
+Line 19: setLoading(true);
+Line 20: setMessage('');
+Line 21: try {
+Line 22: console.log('PatientDashboard: Sending GET /api/storage/list with token:', localStorage.getItem('token'));
+Line 23: const response = await axios.get('http://127.0.0.1:5000/api/storage/list', {
+Line 24: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 25: });
+Line 26: console.log('PatientDashboard: List response:', response.data);
+Line 27: setRecords(response.data.files || []);
+Line 28: } catch (err) {
+Line 29: console.error('PatientDashboard: Fetch records error:', err.response || err);
+Line 30: setMessage(`Failed to load records: ${err.response?.data?.error || err.message} (Status: ${err.response?.status || 'N/A'})`);
+Line 31: }
+Line 32: setLoading(false);
+Line 33: };
+Line 34: 
+Line 35: const handleFileChange = (e) => {
+Line 36: setSelectedFile(e.target.files[0]);
+Line 37: setMessage('');
+Line 38: };
+Line 39: 
+Line 40: const handleUpload = async () => {
+Line 41: if (!selectedFile) {
+Line 42: setMessage('Please select a file first.');
+Line 43: return;
+Line 44: }
+Line 45: const formData = new FormData();
+Line 46: formData.append('file', selectedFile);
+Line 47: setLoading(true);
+Line 48: setMessage('');
+Line 49: try {
+Line 50: console.log('PatientDashboard: Sending POST /api/storage/upload with file:', selectedFile.name);
+Line 51: const response = await axios.post('http://127.0.0.1:5000/api/storage/upload', formData, {
+Line 52: headers: {
+Line 53: Authorization: `Bearer ${localStorage.getItem('token')}`,
+Line 54: 'Content-Type': 'multipart/form-data',
+Line 55: },
+Line 56: });
+Line 57: console.log('PatientDashboard: Upload response:', response.data);
+Line 58: setMessage('Upload successful!');
+Line 59: setSelectedFile(null);
+Line 60: fetchRecords();
+Line 61: } catch (err) {
+Line 62: console.error('PatientDashboard: Upload error:', err.response || err);
+Line 63: setMessage(`Upload failed: ${err.response?.data?.error || err.message} (Status: ${err.response?.status || 'N/A'})`);
+Line 64: }
+Line 65: setLoading(false);
+Line 66: };
+Line 67: 
+Line 68: const handleDownload = async (fileName) => {
+Line 69: setLoading(true);
+Line 70: setMessage('');
+Line 71: try {
+Line 72: const response = await axios.get(`http://127.0.0.1:5000/api/storage/download/${encodeURIComponent(fileName)}`, {
+Line 73: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 74: responseType: 'blob',
+Line 75: });
+Line 76: const url = window.URL.createObjectURL(new Blob([response.data]));
+Line 77: const link = document.createElement('a');
+Line 78: link.href = url;
+Line 79: link.setAttribute('download', fileName.split('/').pop());
+Line 80: document.body.appendChild(link);
+Line 81: link.click();
+Line 82: link.remove();
+Line 83: window.URL.revokeObjectURL(url);
+Line 84: setMessage('Download started!');
+Line 85: } catch (err) {
+Line 86: console.error('PatientDashboard: Download error:', err.response || err);
+Line 87: setMessage(`Download failed: ${err.response?.data?.error || err.message} (Status: ${err.response?.status || 'N/A'})`);
+Line 88: }
+Line 89: setLoading(false);
+Line 90: };
+Line 91: 
+Line 92: const handleTabChange = (event, newValue) => {
+Line 93: setActiveTab(newValue);
+Line 94: };
+Line 95: 
+Line 96: return (
+Line 97: <Container sx={{ mt: 4 }}>
+Line 98: <Typography variant="h4" gutterBottom>
+Line 99: Patient Dashboard
+Line 100: </Typography>
+Line 101: 
+Line 102: <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+Line 103: <Tabs value={activeTab} onChange={handleTabChange}>
+Line 104: <Tab label="File Records" />
+Line 105: <Tab label="Medical Forms" />
+Line 106: </Tabs>
+Line 107: </Box>
+Line 108: 
+Line 109: {activeTab === 0 && (
+Line 110: <>
+Line 111: <Box sx={{ mb: 4 }}>
+Line 112: <Typography variant="h6">Upload New Record</Typography>
+Line 113: <Input type="file" onChange={handleFileChange} sx={{ mr: 2 }} />
+Line 114: <Button
+Line 115: variant="contained"
+Line 116: onClick={handleUpload}
+Line 117: disabled={loading || !selectedFile}
+Line 118: >
+Line 119: {loading ? <CircularProgress size={24} /> : 'Upload'}
+Line 120: </Button>
+Line 121: </Box>
+Line 122: {message && (
+Line 123: <Alert
+Line 124: severity={message.includes('success') ? 'success' : 'error'}
+Line 125: sx={{ mb: 2 }}
+Line 126: >
+Line 127: {message}
+Line 128: </Alert>
+Line 129: )}
+Line 130: <Typography variant="h6">Your Records</Typography>
+Line 131: {loading ? (
+Line 132: <CircularProgress />
+Line 133: ) : (
+Line 134: <List>
+Line 135: {records.length === 0 ? (
+Line 136: <Typography>No records found. Upload one to get started!</Typography>
+Line 137: ) : (
+Line 138: records.map((r) => (
+Line 139: <ListItem key={r.id || r.filename} divider>
+Line 140: <ListItemText primary={r.filename} secondary={r.upload_time} />
+Line 141: <Button
+Line 142: variant="outlined"
+Line 143: onClick={() => handleDownload(r.filename)}
+Line 144: >
+Line 145: Download
+Line 146: </Button>
+Line 147: </ListItem>
+Line 148: ))
+Line 149: )}
+Line 150: </List>
+Line 151: )}
+Line 152: <Button variant="text" onClick={fetchRecords} sx={{ mt: 2 }}>
+Line 153: Refresh List
+Line 154: </Button>
+Line 155: </>
+Line 156: )}
+Line 157: 
+Line 158: {activeTab === 1 && <MedicalForms />}
+Line 159: </Container>
+Line 160: );
+Line 161: };
+Line 162: 
+Line 163: export default PatientDashboard;
+
+---
+
+File: frontend\react_app\src\components\PrescriptionManagement.js
+Line 1: import React, { useState, useEffect } from 'react';
+Line 2: import {
+Line 3: Container,
+Line 4: Typography,
+Line 5: Card,
+Line 6: CardContent,
+Line 7: TextField,
+Line 8: Button,
+Line 9: Grid,
+Line 10: Box,
+Line 11: Alert,
+Line 12: CircularProgress,
+Line 13: List,
+Line 14: ListItem,
+Line 15: ListItemText,
+Line 16: ListItemSecondaryAction,
+Line 17: IconButton,
+Line 18: Dialog,
+Line 19: DialogTitle,
+Line 20: DialogContent,
+Line 21: DialogActions,
+Line 22: Chip,
+Line 23: FormControl,
+Line 24: InputLabel,
+Line 25: Select,
+Line 26: MenuItem,
+Line 27: Paper,
+Line 28: Divider,
+Line 29: } from '@mui/material';
+Line 30: import {
+Line 31: Add as AddIcon,
+Line 32: Edit as EditIcon,
+Line 33: Visibility as ViewIcon,
+Line 34: CheckCircle as CheckIcon,
+Line 35: Cancel as CancelIcon,
+Line 36: } from '@mui/icons-material';
+Line 37: import axios from 'axios';
+Line 38: 
+Line 39: const PrescriptionManagement = () => {
+Line 40: const [prescriptions, setPrescriptions] = useState([]);
+Line 41: const [patients, setPatients] = useState([]);
+Line 42: const [loading, setLoading] = useState(false);
+Line 43: const [message, setMessage] = useState('');
+Line 44: const [createDialogOpen, setCreateDialogOpen] = useState(false);
+Line 45: const [viewDialogOpen, setViewDialogOpen] = useState(false);
+Line 46: const [selectedPrescription, setSelectedPrescription] = useState(null);
+Line 47: const [newPrescription, setNewPrescription] = useState({
+Line 48: patient_email: '',
+Line 49: medication_name: '',
+Line 50: dosage: '',
+Line 51: frequency: '',
+Line 52: duration: '',
+Line 53: instructions: ''
+Line 54: });
+Line 55: 
+Line 56: useEffect(() => {
+Line 57: fetchPrescriptions();
+Line 58: fetchPatients();
+Line 59: }, []);
+Line 60: 
+Line 61: const fetchPrescriptions = async () => {
+Line 62: try {
+Line 63: const response = await axios.get('http://127.0.0.1:5000/api/medical/prescriptions', {
+Line 64: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 65: });
+Line 66: setPrescriptions(response.data.prescriptions || []);
+Line 67: } catch (err) {
+Line 68: console.error('Error fetching prescriptions:', err);
+Line 69: }
+Line 70: };
+Line 71: 
+Line 72: const fetchPatients = async () => {
+Line 73: // In a real app, you'd fetch actual patients from your system
+Line 74: // For now, we'll use a mock list
+Line 75: setPatients([
+Line 76: 'patient1@example.com',
+Line 77: 'patient2@example.com',
+Line 78: 'patient3@example.com'
+Line 79: ]);
+Line 80: };
+Line 81: 
+Line 82: const handleCreatePrescription = async () => {
+Line 83: setLoading(true);
+Line 84: setMessage('');
+Line 85: 
+Line 86: try {
+Line 87: await axios.post('http://127.0.0.1:5000/api/medical/prescriptions', newPrescription, {
+Line 88: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 89: });
+Line 90: 
+Line 91: setMessage('Prescription created successfully!');
+Line 92: setCreateDialogOpen(false);
+Line 93: setNewPrescription({
+Line 94: patient_email: '',
+Line 95: medication_name: '',
+Line 96: dosage: '',
+Line 97: frequency: '',
+Line 98: duration: '',
+Line 99: instructions: ''
+Line 100: });
+Line 101: fetchPrescriptions();
+Line 102: 
+Line 103: } catch (err) {
+Line 104: console.error('Error creating prescription:', err);
+Line 105: setMessage(`Error: ${err.response?.data?.error || err.message}`);
+Line 106: }
+Line 107: setLoading(false);
+Line 108: };
+Line 109: 
+Line 110: const updatePrescriptionStatus = async (prescriptionId, status) => {
+Line 111: try {
+Line 112: await axios.put(`http://127.0.0.1:5000/api/medical/prescriptions/${prescriptionId}/status`, {
+Line 113: status: status
+Line 114: }, {
+Line 115: headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+Line 116: });
+Line 117: 
+Line 118: setMessage(`Prescription ${status} successfully!`);
+Line 119: fetchPrescriptions();
+Line 120: 
+Line 121: } catch (err) {
+Line 122: console.error('Error updating prescription:', err);
+Line 123: setMessage(`Error: ${err.response?.data?.error || err.message}`);
+Line 124: }
+Line 125: };
+Line 126: 
+Line 127: const viewPrescription = (prescription) => {
+Line 128: setSelectedPrescription(prescription);
+Line 129: setViewDialogOpen(true);
+Line 130: };
+Line 131: 
+Line 132: const getStatusColor = (status) => {
+Line 133: switch (status) {
+Line 134: case 'active': return 'success';
+Line 135: case 'completed': return 'primary';
+Line 136: case 'cancelled': return 'error';
+Line 137: default: return 'default';
+Line 138: }
+Line 139: };
+Line 140: 
+Line 141: return (
+Line 142: <Container sx={{ mt: 4 }}>
+Line 143: <Typography variant="h4" gutterBottom>
+Line 144: Prescription Management
+Line 145: </Typography>
+Line 146: 
+Line 147: <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+Line 148: <Typography variant="h6">
+Line 149: Manage Patient Prescriptions
+Line 150: </Typography>
+Line 151: <Button
+Line 152: variant="contained"
+Line 153: startIcon={<AddIcon />}
+Line 154: onClick={() => setCreateDialogOpen(true)}
+Line 155: >
+Line 156: Create Prescription
+Line 157: </Button>
+Line 158: </Box>
+Line 159: 
+Line 160: {message && (
+Line 161: <Alert severity={message.includes('success') ? 'success' : 'error'} sx={{ mb: 2 }}>
+Line 162: {message}
+Line 163: </Alert>
+Line 164: )}
+Line 165: 
+Line 166: <Card>
+Line 167: <CardContent>
+Line 168: <Typography variant="h6" gutterBottom>
+Line 169: Prescriptions
+Line 170: </Typography>
+Line 171: {prescriptions.length === 0 ? (
+Line 172: <Typography>No prescriptions found.</Typography>
+Line 173: ) : (
+Line 174: <List>
+Line 175: {prescriptions.map((prescription) => (
+Line 176: <ListItem key={prescription.id} divider>
+Line 177: <ListItemText
+Line 178: primary={prescription.medication_name}
+Line 179: secondary={
+Line 180: <Box>
+Line 181: <Typography variant="body2">
+Line 182: Patient: {prescription.patient_email}
+Line 183: </Typography>
+Line 184: <Typography variant="body2">
+Line 185: Dosage: {prescription.dosage} - {prescription.frequency}
+Line 186: </Typography>
+Line 187: <Typography variant="body2">
+Line 188: Duration: {prescription.duration}
+Line 189: </Typography>
+Line 190: <Typography variant="body2">
+Line 191: Created: {new Date(prescription.created_at).toLocaleDateString()}
+Line 192: </Typography>
+Line 193: </Box>
+Line 194: }
+Line 195: />
+Line 196: <ListItemSecondaryAction>
+Line 197: <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+Line 198: <Chip
+Line 199: label={prescription.status}
+Line 200: color={getStatusColor(prescription.status)}
+Line 201: size="small"
+Line 202: />
+Line 203: <IconButton onClick={() => viewPrescription(prescription)}>
+Line 204: <ViewIcon />
+Line 205: </IconButton>
+Line 206: {prescription.status === 'active' && (
+Line 207: <>
+Line 208: <IconButton
+Line 209: onClick={() => updatePrescriptionStatus(prescription.id, 'completed')}
+Line 210: color="primary"
+Line 211: >
+Line 212: <CheckIcon />
+Line 213: </IconButton>
+Line 214: <IconButton
+Line 215: onClick={() => updatePrescriptionStatus(prescription.id, 'cancelled')}
+Line 216: color="error"
+Line 217: >
+Line 218: <CancelIcon />
+Line 219: </IconButton>
+Line 220: </>
+Line 221: )}
+Line 222: </Box>
+Line 223: </ListItemSecondaryAction>
+Line 224: </ListItem>
+Line 225: ))}
+Line 226: </List>
+Line 227: )}
+Line 228: </CardContent>
+Line 229: </Card>
+Line 230: 
+Line 231: {/* Create Prescription Dialog */}
+Line 232: <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} maxWidth="md" fullWidth>
+Line 233: <DialogTitle>Create New Prescription</DialogTitle>
+Line 234: <DialogContent>
+Line 235: <Grid container spacing={2} sx={{ mt: 1 }}>
+Line 236: <Grid item xs={12}>
+Line 237: <FormControl fullWidth>
+Line 238: <InputLabel>Patient Email</InputLabel>
+Line 239: <Select
+Line 240: value={newPrescription.patient_email}
+Line 241: onChange={(e) => setNewPrescription(prev => ({ ...prev, patient_email: e.target.value }))}
+Line 242: >
+Line 243: {patients.map((patient) => (
+Line 244: <MenuItem key={patient} value={patient}>
+Line 245: {patient}
+Line 246: </MenuItem>
+Line 247: ))}
+Line 248: </Select>
+Line 249: </FormControl>
+Line 250: </Grid>
+Line 251: <Grid item xs={12} sm={6}>
+Line 252: <TextField
+Line 253: fullWidth
+Line 254: label="Medication Name"
+Line 255: value={newPrescription.medication_name}
+Line 256: onChange={(e) => setNewPrescription(prev => ({ ...prev, medication_name: e.target.value }))}
+Line 257: />
+Line 258: </Grid>
+Line 259: <Grid item xs={12} sm={6}>
+Line 260: <TextField
+Line 261: fullWidth
+Line 262: label="Dosage"
+Line 263: value={newPrescription.dosage}
+Line 264: onChange={(e) => setNewPrescription(prev => ({ ...prev, dosage: e.target.value }))}
+Line 265: placeholder="e.g., 500mg"
+Line 266: />
+Line 267: </Grid>
+Line 268: <Grid item xs={12} sm={6}>
+Line 269: <TextField
+Line 270: fullWidth
+Line 271: label="Frequency"
+Line 272: value={newPrescription.frequency}
+Line 273: onChange={(e) => setNewPrescription(prev => ({ ...prev, frequency: e.target.value }))}
+Line 274: placeholder="e.g., Twice daily"
+Line 275: />
+Line 276: </Grid>
+Line 277: <Grid item xs={12} sm={6}>
+Line 278: <TextField
+Line 279: fullWidth
+Line 280: label="Duration"
+Line 281: value={newPrescription.duration}
+Line 282: onChange={(e) => setNewPrescription(prev => ({ ...prev, duration: e.target.value }))}
+Line 283: placeholder="e.g., 7 days"
+Line 284: />
+Line 285: </Grid>
+Line 286: <Grid item xs={12}>
+Line 287: <TextField
+Line 288: fullWidth
+Line 289: label="Instructions"
+Line 290: multiline
+Line 291: rows={3}
+Line 292: value={newPrescription.instructions}
+Line 293: onChange={(e) => setNewPrescription(prev => ({ ...prev, instructions: e.target.value }))}
+Line 294: placeholder="Special instructions for the patient..."
+Line 295: />
+Line 296: </Grid>
+Line 297: </Grid>
+Line 298: </DialogContent>
+Line 299: <DialogActions>
+Line 300: <Button onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
+Line 301: <Button
+Line 302: onClick={handleCreatePrescription}
+Line 303: variant="contained"
+Line 304: disabled={loading || !newPrescription.patient_email || !newPrescription.medication_name}
+Line 305: >
+Line 306: {loading ? <CircularProgress size={20} /> : 'Create Prescription'}
+Line 307: </Button>
+Line 308: </DialogActions>
+Line 309: </Dialog>
+Line 310: 
+Line 311: {/* View Prescription Dialog */}
+Line 312: <Dialog open={viewDialogOpen} onClose={() => setViewDialogOpen(false)} maxWidth="md" fullWidth>
+Line 313: <DialogTitle>Prescription Details</DialogTitle>
+Line 314: <DialogContent>
+Line 315: {selectedPrescription && (
+Line 316: <Box>
+Line 317: <Grid container spacing={2}>
+Line 318: <Grid item xs={12} sm={6}>
+Line 319: <Typography variant="subtitle2" color="text.secondary">
+Line 320: Patient
+Line 321: </Typography>
+Line 322: <Typography variant="body1">
+Line 323: {selectedPrescription.patient_email}
+Line 324: </Typography>
+Line 325: </Grid>
+Line 326: <Grid item xs={12} sm={6}>
+Line 327: <Typography variant="subtitle2" color="text.secondary">
+Line 328: Status
+Line 329: </Typography>
+Line 330: <Chip
+Line 331: label={selectedPrescription.status}
+Line 332: color={getStatusColor(selectedPrescription.status)}
+Line 333: size="small"
+Line 334: />
+Line 335: </Grid>
+Line 336: <Grid item xs={12} sm={6}>
+Line 337: <Typography variant="subtitle2" color="text.secondary">
+Line 338: Medication
+Line 339: </Typography>
+Line 340: <Typography variant="body1">
+Line 341: {selectedPrescription.medication_name}
+Line 342: </Typography>
+Line 343: </Grid>
+Line 344: <Grid item xs={12} sm={6}>
+Line 345: <Typography variant="subtitle2" color="text.secondary">
+Line 346: Dosage
+Line 347: </Typography>
+Line 348: <Typography variant="body1">
+Line 349: {selectedPrescription.dosage}
+Line 350: </Typography>
+Line 351: </Grid>
+Line 352: <Grid item xs={12} sm={6}>
+Line 353: <Typography variant="subtitle2" color="text.secondary">
+Line 354: Frequency
+Line 355: </Typography>
+Line 356: <Typography variant="body1">
+Line 357: {selectedPrescription.frequency}
+Line 358: </Typography>
+Line 359: </Grid>
+Line 360: <Grid item xs={12} sm={6}>
+Line 361: <Typography variant="subtitle2" color="text.secondary">
+Line 362: Duration
+Line 363: </Typography>
+Line 364: <Typography variant="body1">
+Line 365: {selectedPrescription.duration}
+Line 366: </Typography>
+Line 367: </Grid>
+Line 368: <Grid item xs={12}>
+Line 369: <Typography variant="subtitle2" color="text.secondary">
+Line 370: Instructions
+Line 371: </Typography>
+Line 372: <Typography variant="body1">
+Line 373: {selectedPrescription.instructions || 'No special instructions'}
+Line 374: </Typography>
+Line 375: </Grid>
+Line 376: <Grid item xs={12}>
+Line 377: <Typography variant="subtitle2" color="text.secondary">
+Line 378: Created Date
+Line 379: </Typography>
+Line 380: <Typography variant="body1">
+Line 381: {new Date(selectedPrescription.created_at).toLocaleString()}
+Line 382: </Typography>
+Line 383: </Grid>
+Line 384: </Grid>
+Line 385: </Box>
+Line 386: )}
+Line 387: </DialogContent>
+Line 388: <DialogActions>
+Line 389: <Button onClick={() => setViewDialogOpen(false)}>Close</Button>
+Line 390: </DialogActions>
+Line 391: </Dialog>
+Line 392: </Container>
+Line 393: );
+Line 394: };
+Line 395: 
+Line 396: export default PrescriptionManagement;
+
+---
+
+File: frontend\react_app\src\components\Register.js
+Line 1: // File: frontend/react_app/src/components/Register.js
+Line 2: import React, { useState } from 'react';
+Line 3: import {
+Line 4: Container,
+Line 5: Paper,
+Line 6: TextField,
+Line 7: Button,
+Line 8: Typography,
+Line 9: Alert,
+Line 10: Box,
+Line 11: CircularProgress,
+Line 12: FormControl,
+Line 13: InputLabel,
+Line 14: Select,
+Line 15: MenuItem
+Line 16: } from '@mui/material';
+Line 17: import axios from 'axios';
+Line 18: 
+Line 19: const Register = ({ onRegister }) => {
+Line 20: const [email, setEmail] = useState('');
+Line 21: const [password, setPassword] = useState('');
+Line 22: const [role, setRole] = useState('patient');
+Line 23: const [error, setError] = useState('');
+Line 24: const [loading, setLoading] = useState(false);
+Line 25: 
+Line 26: const handleSubmit = async (e) => {
+Line 27: e.preventDefault();
+Line 28: setError('');
+Line 29: setLoading(true);
+Line 30: try {
+Line 31: console.log('Register: Sending request with:', { email, password, role });
+Line 32: const response = await axios.post('http://127.0.0.1:5000/api/auth/register', {
+Line 33: email,
+Line 34: password,
+Line 35: role,
+Line 36: });
+Line 37: console.log('Register: Response:', response.data);
+Line 38: if (response.data.token) {
+Line 39: console.log('Register: Token received, calling onRegister');
+Line 40: onRegister(response.data.token);
+Line 41: } else {
+Line 42: setError('No token received from server');
+Line 43: }
+Line 44: } catch (err) {
+Line 45: console.error('Registration error:', err);
+Line 46: if (err.code === 'ECONNREFUSED' || err.message.includes('Network Error')) {
+Line 47: setError('Cannot connect to server. Please make sure the backend is running on http://127.0.0.1:5000');
+Line 48: } else {
+Line 49: setError(err.response?.data?.error || err.message || 'Registration failed');
+Line 50: }
+Line 51: } finally {
+Line 52: setLoading(false);
+Line 53: }
+Line 54: };
+Line 55: 
+Line 56: return (
+Line 57: <Container component="main" maxWidth="sm">
+Line 58: <Box
+Line 59: sx={{
+Line 60: marginTop: 8,
+Line 61: display: 'flex',
+Line 62: flexDirection: 'column',
+Line 63: alignItems: 'center',
+Line 64: }}
+Line 65: >
+Line 66: <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
+Line 67: <Typography component="h1" variant="h4" align="center" gutterBottom>
+Line 68: Secure Health Records
+Line 69: </Typography>
+Line 70: <Typography component="h2" variant="h5" align="center" gutterBottom>
+Line 71: Register
+Line 72: </Typography>
+Line 73: 
+Line 74: {error && (
+Line 75: <Alert severity="error" sx={{ mb: 2 }}>
+Line 76: {error}
+Line 77: </Alert>
+Line 78: )}
+Line 79: 
+Line 80: <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+Line 81: <TextField
+Line 82: margin="normal"
+Line 83: required
+Line 84: fullWidth
+Line 85: id="email"
+Line 86: label="Email Address"
+Line 87: name="email"
+Line 88: autoComplete="email"
+Line 89: autoFocus
+Line 90: value={email}
+Line 91: onChange={(e) => setEmail(e.target.value)}
+Line 92: />
+Line 93: <TextField
+Line 94: margin="normal"
+Line 95: required
+Line 96: fullWidth
+Line 97: name="password"
+Line 98: label="Password"
+Line 99: type="password"
+Line 100: id="password"
+Line 101: autoComplete="new-password"
+Line 102: value={password}
+Line 103: onChange={(e) => setPassword(e.target.value)}
+Line 104: />
+Line 105: <FormControl fullWidth margin="normal">
+Line 106: <InputLabel id="role-label">Role</InputLabel>
+Line 107: <Select
+Line 108: labelId="role-label"
+Line 109: id="role"
+Line 110: value={role}
+Line 111: label="Role"
+Line 112: onChange={(e) => setRole(e.target.value)}
+Line 113: >
+Line 114: <MenuItem value="patient">Patient</MenuItem>
+Line 115: <MenuItem value="doctor">Doctor</MenuItem>
+Line 116: </Select>
+Line 117: </FormControl>
+Line 118: <Button
+Line 119: type="submit"
+Line 120: fullWidth
+Line 121: variant="contained"
+Line 122: sx={{ mt: 3, mb: 2 }}
+Line 123: disabled={loading}
+Line 124: >
+Line 125: {loading ? <CircularProgress size={24} /> : 'Register'}
+Line 126: </Button>
+Line 127: </Box>
+Line 128: </Paper>
+Line 129: </Box>
+Line 130: </Container>
+Line 131: );
+Line 132: };
+Line 133: 
+Line 134: export default Register;
+
+---
+
+File: patients\sample_patient.txt
+Line 1: Patient Name: John Doe
+Line 2: Age: 45
+Line 3: Blood Group: O+
+Line 4: Diagnosis: Hypertension
+Line 5: Prescription: Amlodipine 5mg daily
+Line 6: Next Appointment: 2025-09-05
+
+---
+
+File: patients\sample_patient1.txt
+Line 1: Patient Name: John Doe
+Line 2: Age: 45
+Line 3: Condition: Hypertension
+Line 4: Medication: Amlodipine
+
+---
+
+File: patients\sample_patient2.txt
+Line 1: Patient Name: Jane Smith
+Line 2: Age: 30
+Line 3: Condition: Diabetes
+Line 4: Medication: Metformin
+
+---
+
+File: patients\sample_patient3.txt
+Line 1: Patient Name: Alice Johnson
+Line 2: Age: 60
+Line 3: Condition: Asthma
+Line 4: Medication: Salbutamol Inhaler
+
+---
+
+File: scripts\deploy.js
+Line 1: // File: scripts/deploy.js
+Line 2: const { ethers } = require("hardhat");
+Line 3: 
+Line 4: async function main() {
+Line 5: const AccessLogger = await ethers.getContractFactory("AccessLogger");
+Line 6: const accessLogger = await AccessLogger.deploy();
+Line 7: 
+Line 8: await accessLogger.waitForDeployment();
+Line 9: 
+Line 10: console.log("AccessLogger deployed to:", await accessLogger.getAddress());
+Line 11: 
+Line 12: // Save ABI and address to contracts/AccessLogger.json
+Line 13: const fs = require("fs");
+Line 14: const path = require("path");
+Line 15: const contractsDir = path.join(__dirname, "../contracts");
+Line 16: if (!fs.existsSync(contractsDir)) {
+Line 17: fs.mkdirSync(contractsDir, { recursive: true });
+Line 18: }
+Line 19: 
+Line 20: const contractData = {
+Line 21: address: await accessLogger.getAddress(),
+Line 22: abi: AccessLogger.interface.formatJson(),
+Line 23: };
+Line 24: const jsonPath = path.join(contractsDir, "AccessLogger.json");
+Line 25: fs.writeFileSync(jsonPath, JSON.stringify(contractData, null, 2));
+Line 26: 
+Line 27: console.log("Contract data saved to:", jsonPath);
+Line 28: }
+Line 29: 
+Line 30: main()
+Line 31: .then(() => process.exit(0))
+Line 32: .catch((error) => {
+Line 33: console.error(error);
+Line 34: process.exit(1);
+Line 35: });
+
+---

@@ -1,0 +1,4 @@
+{
+  "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "abi": "[{\"type\":\"event\",\"anonymous\":false,\"name\":\"AccessLogged\",\"inputs\":[{\"type\":\"address\",\"name\":\"accessor\",\"indexed\":true},{\"type\":\"string\",\"name\":\"userEmail\",\"indexed\":false},{\"type\":\"string\",\"name\":\"recordName\",\"indexed\":false},{\"type\":\"string\",\"name\":\"action\",\"indexed\":false},{\"type\":\"uint256\",\"name\":\"timestamp\",\"indexed\":false}]},{\"type\":\"function\",\"name\":\"logAccess\",\"constant\":false,\"payable\":false,\"inputs\":[{\"type\":\"string\",\"name\":\"userEmail\"},{\"type\":\"string\",\"name\":\"recordName\"},{\"type\":\"string\",\"name\":\"action\"}],\"outputs\":[]}]"
+}

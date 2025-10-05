@@ -1,0 +1,4 @@
+Patient Name: Alice Johnson
+Age: 60
+Condition: Asthma
+Medication: Salbutamol Inhaler

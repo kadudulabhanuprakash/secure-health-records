@@ -1,0 +1,10 @@
+
+.\.venv\Scripts\activate
+python main.py  # Starts Flask backend, including blockchain endpoint
+
+cd C:\secure-health-records
+npx hardhat node  # Starts local Ethereum node for blockchain
+
+.\.venv\Scripts\activate
+cd C:\secure-health-records\frontend\react_app
+npm start  # Starts frontend, which can trigger blockchain logging via download

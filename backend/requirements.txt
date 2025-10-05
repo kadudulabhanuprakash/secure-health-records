@@ -1,0 +1,10 @@
+# C:\secure-health-records\backend\requirements.txt
+flask==3.0.3
+flask_sqlalchemy==3.1.1
+flask_bcrypt==1.0.1
+werkzeug==3.0.4
+web3==7.3.0
+flask-jwt-extended==4.6.0
+flask-cors==5.0.0
+azure-storage-blob==12.23.1
+python-dotenv==1.0.1

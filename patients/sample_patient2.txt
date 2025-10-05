@@ -1,0 +1,4 @@
+Patient Name: Jane Smith
+Age: 30
+Condition: Diabetes
+Medication: Metformin
