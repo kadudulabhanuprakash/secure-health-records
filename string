@@ -1,9 +1,0 @@
-DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=securehealthrecords123;AccountKey=bLEsr/0cpV63DBt233z9O6xJ1kSYZ5s34/QqrlM6V1i8EthFGxGmFL+mPz+7xZQQGd58aP+iuKin+AStWh6PMA==;BlobEndpoint=https://securehealthrecords123.blob.core.windows.net/;FileEndpoint=https://securehealthrecords123.file.core.windows.net/;QueueEndpoint=https://securehealthrecords123.queue.core.windows.net/;TableEndpoint=https://securehealthrecords123.table.core.windows.net/
-(.venv) 
-
-az sql server create \
-  --name securehealthrecords-sqlserver \
-  --resource-group rg-health-records \
-  --location southindia \
-  --admin-user sqladmin \
-  --admin-password Kprnaidu@2004

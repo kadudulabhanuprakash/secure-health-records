@@ -2,7 +2,10 @@ from azure.storage.blob import BlobServiceClient
 import os
 
 # 🔑 Use your connection string here
-connection_string = "DefaultEndpointsProtocol=https;AccountName=securehealthrecords123;AccountKey=bLEsr/0cpV63DBt233z9O6xJ1kSYZ5s34/QqrlM6V1i8EthFGxGmFL+mPz+7xZQQGd58aP+iuKin+AStWh6PMA==;EndpointSuffix=core.windows.net"
+import os
+connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+if not connection_string:
+    raise ValueError("Set AZURE_STORAGE_CONNECTION_STRING in .env")
 container_name = "patient-records"
 
 # Initialize Blob Service Client

@@ -1,7 +1,26 @@
+# Secrets
 .env
+
+# Virtual envs
 .venv/
 venv/
+env/
+
+# Python caches
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Node
 node_modules/
+npm-debug.log*
+
+# Builds
 build/
+dist/
+*.db  # SQLite dbs
+
+# OS
+.DS_Store
+Thumbs.db
