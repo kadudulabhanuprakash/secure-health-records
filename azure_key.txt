@@ -1,0 +1,2 @@
+sd5HEZNL0bKIukPExDynbMxU0f1evaJS8NmtD7VvzuPkwhK6BnnA8XcbGX2qEaYWpVqX1qijm3vM+AStxaquDw==
+DefaultEndpointsProtocol=https;AccountName=securehealthrecords123;AccountKey=sd5HEZNL0bKIukPExDynbMxU0f1evaJS8NmtD7VvzuPkwhK6BnnA8XcbGX2qEaYWpVqX1qijm3vM+AStxaquDw==;EndpointSuffix=core.windows.net
